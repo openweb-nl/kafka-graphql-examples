@@ -207,6 +207,7 @@ It's the easiest to run the tests and generate the output with the scripts using
 
 There are several scripts to automate things and thus making live easier. They are placed at the root level to not make them to complicated. Often they need multiple modules.
 * `clean.sh` stops and removes all used Docker container, it does not throw away the images
+* `create-certs.sh` is used to create a docker volume with the needed certs/secrets.
 * `loop.sh` takes a number and will (re)create the whole environment, and run a test x times.
 * `prepare.sh` is needed the first time before `restart.sh` can be used. It will get all the dependencies and build jar's. It needs leiningen, maven, sassc to be installed. As last step it will (re)build the docker images.
 * `restart.sh` is used to stop and start the whole setup, it does not start a test. When it's finished the application should be accessible at port 8181. 

@@ -7,8 +7,13 @@ services:
       context: command-generator
     container_name: command-generator
     environment:
-      KAFKA_BROKERS: "kafka-1:19092,kafka-2:29092,kafka-3:39092"
-      SCHEMA_REGISTRY_URL: "http://schema-registry:18081"
+      KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
+      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      SSL_KEYSTORE_LOCATION: "kafka.command-generator.keystore.jks"
+      SSL_TRUSTSTORE_LOCATION: "kafka.command-generator.truststore.jks"
+      SSL_PASSWORD: "openbanksafe"
+    volumes:
+      - open-bank-certs:/etc/kafka/secrets
     mem_limit: 200m
     restart: always
 
@@ -21,8 +26,13 @@ services:
     environment:
       DB_PORT: "25432"
       DB_HOSTNAME: "db"
-      KAFKA_BROKERS: "kafka-1:19092,kafka-2:29092,kafka-3:39092"
-      SCHEMA_REGISTRY_URL: "http://schema-registry:18081"
+      KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
+      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      SSL_KEYSTORE_LOCATION: "kafka.command-handler.keystore.jks"
+      SSL_TRUSTSTORE_LOCATION: "kafka.command-handler.truststore.jks"
+      SSL_PASSWORD: "openbanksafe"
+    volumes:
+      - open-bank-certs:/etc/kafka/secrets
     mem_limit: 200m
     restart: always
 
@@ -36,8 +46,13 @@ services:
       - command-generator
       - command-handler
     environment:
-      KAFKA_BROKERS: "kafka-1:19092,kafka-2:29092,kafka-3:39092"
-      SCHEMA_REGISTRY_URL: "http://schema-registry:18081"
+      KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
+      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      SSL_KEYSTORE_LOCATION: "kafka.heartbeat.keystore.jks"
+      SSL_TRUSTSTORE_LOCATION: "kafka.heartbeat.truststore.jks"
+      SSL_PASSWORD: "openbanksafe"
+    volumes:
+      - open-bank-certs:/etc/kafka/secrets
     mem_limit: 150m
     restart: always
 
@@ -52,8 +67,13 @@ services:
     environment:
       DB_PORT: "25432"
       DB_HOSTNAME: "db"
-      KAFKA_BROKERS: "kafka-1:19092,kafka-2:29092,kafka-3:39092"
-      SCHEMA_REGISTRY_URL: "http://schema-registry:18081"
+      KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
+      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      SSL_KEYSTORE_LOCATION: "kafka.graphql-endpoint.keystore.jks"
+      SSL_TRUSTSTORE_LOCATION: "kafka.graphql-endpoint.truststore.jks"
+      SSL_PASSWORD: "openbanksafe"
+    volumes:
+      - open-bank-certs:/etc/kafka/secrets
     mem_limit: 250m
     restart: always
 
@@ -68,3 +88,7 @@ services:
     environment:
       - NGINX_PORT=80
     restart: always
+
+volumes:
+  open-bank-certs:
+    external: true

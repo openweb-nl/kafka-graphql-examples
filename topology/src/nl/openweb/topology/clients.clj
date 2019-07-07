@@ -4,14 +4,20 @@
             [nl.openweb.topology.value-generator :as vg])
   (:import (io.confluent.kafka.serializers KafkaAvroSerializer AbstractKafkaAvroSerDeConfig KafkaAvroDeserializer KafkaAvroDeserializerConfig)
            (java.util Properties)
-           (org.apache.kafka.clients.producer ProducerRecord KafkaProducer ProducerConfig)
-           (org.apache.kafka.common.serialization StringSerializer StringDeserializer)
+           (org.apache.kafka.clients CommonClientConfigs)
            (org.apache.kafka.clients.consumer ConsumerConfig KafkaConsumer ConsumerRecords ConsumerRecord)
+           (org.apache.kafka.clients.producer ProducerRecord KafkaProducer ProducerConfig)
+           (org.apache.kafka.common.config SslConfigs)
+           (org.apache.kafka.common.security.auth SecurityProtocol)
+           (org.apache.kafka.common.serialization StringSerializer StringDeserializer)
            (org.apache.avro.specific SpecificRecord))
   (:gen-class))
 
 (def brokers (or (System/getenv "KAFKA_BROKERS") "localhost:9092"))
 (def schema-url (or (System/getenv "SCHEMA_REGISTRY_URL") "http://localhost:8081"))
+(def keystore-location (System/getenv "SSL_KEYSTORE_LOCATION"))
+(def truststore-location(System/getenv "SSL_TRUSTSTORE_LOCATION"))
+(def ssl-password (System/getenv "SSL_PASSWORD"))
 
 (defn get-key
   [topic-name value]
@@ -30,6 +36,19 @@
   (if-let [pr (ProducerRecord. topic-name (get-key topic-name record) record)]
     (.send producer pr)))
 
+(defn optionally-add-ssl
+  [properties]
+  (if (and keystore-location truststore-location ssl-password)
+    (doto properties
+      (.put CommonClientConfigs/SECURITY_PROTOCOL_CONFIG (.name SecurityProtocol/SSL))
+      (.put SslConfigs/SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG "")
+      (.put SslConfigs/SSL_TRUSTSTORE_LOCATION_CONFIG (str "/etc/kafka/secrets/" truststore-location))
+      (.put SslConfigs/SSL_TRUSTSTORE_PASSWORD_CONFIG ssl-password)
+      (.put SslConfigs/SSL_KEYSTORE_LOCATION_CONFIG (str "/etc/kafka/secrets/" keystore-location))
+      (.put SslConfigs/SSL_KEYSTORE_PASSWORD_CONFIG ssl-password)
+      (.put SslConfigs/SSL_KEY_PASSWORD_CONFIG ssl-password)
+      )))
+
 (defn get-producer
   [client-id & {:keys [config]}]
   (let [properties (Properties.)]
@@ -42,6 +61,7 @@
       (.put ProducerConfig/ACKS_CONFIG "all")
       (.put AbstractKafkaAvroSerDeConfig/SCHEMA_REGISTRY_URL_CONFIG schema-url)
       (.put AbstractKafkaAvroSerDeConfig/AUTO_REGISTER_SCHEMAS false)
+      (optionally-add-ssl)
       #(doseq [[prop-name prop-val] config] (.put % prop-name prop-val)))
     (KafkaProducer. properties)))
 
@@ -70,6 +90,7 @@
       (.put ConsumerConfig/VALUE_DESERIALIZER_CLASS_CONFIG (.getName KafkaAvroDeserializer))
       (.put KafkaAvroDeserializerConfig/SPECIFIC_AVRO_READER_CONFIG "true")
       (.put AbstractKafkaAvroSerDeConfig/SCHEMA_REGISTRY_URL_CONFIG schema-url)
+      (optionally-add-ssl)
       #(doseq [[prop-name prop-val] config] (.put % prop-name prop-val)))
     (KafkaConsumer. properties)))
 

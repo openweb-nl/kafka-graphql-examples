@@ -1,5 +1,5 @@
 ---
-version: '2.2'
+version: "2.2"
 services:
 
   db:
@@ -71,7 +71,8 @@ services:
     image: confluentinc/cp-kafka:5.3.0
     container_name: kafka-1
     ports:
-      - "19092:9092"
+      - "9092:9092"
+      - "9093:9093"
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -79,19 +80,31 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:19092,SSL://kafka-1:19093,PE://127.0.0.1:9092,SE://127.0.0.1:9093
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.kafka-1.keystore.jks
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: kafka-1_keystore_creds
+      KAFKA_SSL_KEY_CREDENTIALS: kafka-1_sslkey_creds
+      KAFKA_SSL_TRUSTSTORE_FILENAME:  kafka.kafka-1.truststore.jks
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: kafka-1_truststore_creds
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      KAFKA_SSL_CLIENT_AUTH: required
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_MIN_INSYNC_REPLICAS: 2
-      CONFLUENT_SUPPORT_METRICS_ENABLE: 0
-    mem_limit: 1300m
+      KAFKA_INTER_BROKER_LISTENER_NAME: SSL
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,PE:PLAINTEXT,SE:SSL
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+    volumes:
+      - open-bank-certs:/etc/kafka/secrets
+    mem_limit: 1500m
     restart: always
 
   kafka-2:
     image: confluentinc/cp-kafka:5.3.0
     container_name: kafka-2
     ports:
-      - "29092:9092"
+      - "9094:9094"
+      - "9095:9095"
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -99,19 +112,31 @@ services:
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:19094,SSL://kafka-2:19095,PE://127.0.0.1:9094,SE://127.0.0.1:9095
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.kafka-2.keystore.jks
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: kafka-2_keystore_creds
+      KAFKA_SSL_KEY_CREDENTIALS: kafka-2_sslkey_creds
+      KAFKA_SSL_TRUSTSTORE_FILENAME:  kafka.kafka-2.truststore.jks
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: kafka-2_truststore_creds
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      KAFKA_SSL_CLIENT_AUTH: required
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_MIN_INSYNC_REPLICAS: 2
-      CONFLUENT_SUPPORT_METRICS_ENABLE: 0
-    mem_limit: 1300m
+      KAFKA_INTER_BROKER_LISTENER_NAME: SSL
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,PE:PLAINTEXT,SE:SSL
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+    volumes:
+      - open-bank-certs:/etc/kafka/secrets
+    mem_limit: 1500m
     restart: always
 
   kafka-3:
     image: confluentinc/cp-kafka:5.3.0
     container_name: kafka-3
     ports:
-      - "39092:9092"
+      - "9096:9096"
+      - "9097:9097"
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -119,19 +144,30 @@ services:
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:39092
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:19096,SSL://kafka-3:19097,PE://127.0.0.1:9096,SE://127.0.0.1:9097
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.kafka-3.keystore.jks
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: kafka-3_keystore_creds
+      KAFKA_SSL_KEY_CREDENTIALS: kafka-3_sslkey_creds
+      KAFKA_SSL_TRUSTSTORE_FILENAME:  kafka.kafka-3.truststore.jks
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: kafka-3_truststore_creds
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ''
+      KAFKA_SSL_CLIENT_AUTH: required
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
       KAFKA_MIN_INSYNC_REPLICAS: 2
-      CONFLUENT_SUPPORT_METRICS_ENABLE: 0
-    mem_limit: 1300m
+      KAFKA_INTER_BROKER_LISTENER_NAME: SSL
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,PE:PLAINTEXT,SE:SSL
+      CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+    volumes:
+      - open-bank-certs:/etc/kafka/secrets
+    mem_limit: 1500m
     restart: always
 
   schema-registry:
     image: confluentinc/cp-schema-registry:5.3.0
     container_name: sr
     ports:
-      - "18081:8081"
+      - "8081:8081"
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -140,8 +176,13 @@ services:
       - kafka-2
       - kafka-3
     environment:
-      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:18081
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
     mem_limit: 400m
     restart: always
+
+volumes:
+  open-bank-certs:
+    external: true
+
