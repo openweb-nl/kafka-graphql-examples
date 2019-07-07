@@ -3,6 +3,7 @@
             [nl.openweb.topology.core :as core]
             [nl.openweb.topology.value-generator :as vg])
   (:import (io.confluent.kafka.serializers KafkaAvroSerializer AbstractKafkaAvroSerDeConfig KafkaAvroDeserializer KafkaAvroDeserializerConfig)
+           (io.confluent.kafka.serializers.subject TopicRecordNameStrategy)
            (java.util Properties)
            (org.apache.kafka.clients CommonClientConfigs)
            (org.apache.kafka.clients.consumer ConsumerConfig KafkaConsumer ConsumerRecords ConsumerRecord)
@@ -61,6 +62,7 @@
       (.put ProducerConfig/ACKS_CONFIG "all")
       (.put AbstractKafkaAvroSerDeConfig/SCHEMA_REGISTRY_URL_CONFIG schema-url)
       (.put AbstractKafkaAvroSerDeConfig/AUTO_REGISTER_SCHEMAS false)
+      (.put AbstractKafkaAvroSerDeConfig/VALUE_SUBJECT_NAME_STRATEGY (.getName TopicRecordNameStrategy))
       (optionally-add-ssl)
       #(doseq [[prop-name prop-val] config] (.put % prop-name prop-val)))
     (KafkaProducer. properties)))

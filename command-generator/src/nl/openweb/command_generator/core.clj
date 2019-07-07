@@ -9,7 +9,7 @@
 
 (def heartbeat-topic (or (System/getenv "KAFKA_HEARTBEAT_TOPIC") "heartbeat"))
 (def cac-topic (or (System/getenv "KAFKA_CAC_TOPIC") "confirm_account_creation"))
-(def acc-topic (or (System/getenv "KAFKA_ACC_TOPIC") "account_creation_confirmed"))
+(def acf-topic (or (System/getenv "KAFKA_ACF_TOPIC") "account_creation_feedback"))
 (def cmt-topic (or (System/getenv "KAFKA_CMT_TOPIC") "confirm_money_transfer"))
 (def client-id (or (System/getenv "KAFKA_CLIENT_ID") "command-generator"))
 
@@ -72,7 +72,7 @@
 (defn add-account
   [producer ^ConsumerRecord consumer-record]
   (let [^AccountCreationConfirmed value (.value consumer-record)]
-    (when (= Atype/AUTO (.getAType value))
+    (when (and (instance? AccountCreationConfirmed value)(= Atype/AUTO (.getAType value)))
       (swap! accounts conj (-> {}
                                (assoc :token (.getToken value))
                                (assoc :iban (.getIban value))))
@@ -90,4 +90,4 @@
   []
   (let [producer (clients/get-producer client-id)]
     (clients/consume (str client-id "-hb") client-id heartbeat-topic (partial generate-command producer))
-    (clients/consume (str client-id "-acc") client-id acc-topic (partial add-account producer))))
+    (clients/consume (str client-id "-acc") client-id acf-topic (partial add-account producer))))

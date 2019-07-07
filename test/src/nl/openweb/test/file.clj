@@ -10,7 +10,7 @@
 (defonce rows (atom []))
 (defonce writer (atom nil))
 (defonce keep-writing (atom true))
-(def base-file-name "clojure-")
+(def base-file-name "clojure-ssl-")
 
 (defn get-path
   ([]

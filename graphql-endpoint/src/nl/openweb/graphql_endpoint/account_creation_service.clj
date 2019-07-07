@@ -10,8 +10,7 @@
            (java.util UUID)))
 
 (def cac-topic (or (System/getenv "KAFKA_CAC_TOPIC") "confirm_account_creation"))
-(def acc-topic (or (System/getenv "KAFKA_ACC_TOPIC") "account_creation_confirmed"))
-(def acf-topic (or (System/getenv "KAFKA_ACF_TOPIC") "account_creation_failed"))
+(def acf-topic (or (System/getenv "KAFKA_ACF_TOPIC") "account_creation_feedback"))
 (def client-id (or (System/getenv "KAFKA_CLIENT_ID") "graphql-endpoint-accounts"))
 
 (defn v->map
@@ -94,7 +93,7 @@
 
   (start [this]
     (let [subscriptions (atom {:id 0 :map {}})
-          stop-consume-f (clients/consume client-id client-id [acc-topic acf-topic] #(handle-reply % (get-in this [:db :datasource]) subscriptions))]
+          stop-consume-f (clients/consume client-id client-id acf-topic #(handle-reply % (get-in this [:db :datasource]) subscriptions))]
       (-> this
           (assoc :subscriptions subscriptions)
           (assoc :stop-consume stop-consume-f))))

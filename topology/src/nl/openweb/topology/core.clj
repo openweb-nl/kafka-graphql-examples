@@ -14,6 +14,11 @@
   (get topology topic-name))
 
 (defn get-schema
+  [schema-key]
+  (let [class-name (str "nl.openweb.data." (name schema-key))]
+    (Reflector/getStaticField ^String class-name "SCHEMA$")))
+
+(defn get-schemas
   [topic-name]
-  (if-let [key (nth (get-topic topic-name) 2)]
-    (Reflector/getStaticField ^String (str "nl.openweb.data." (name key)) "SCHEMA$")))
+  (if-let [schema-keys (nth (get-topic topic-name) 2)]
+    (map get-schema schema-keys)))

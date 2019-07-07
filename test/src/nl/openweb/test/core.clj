@@ -11,7 +11,7 @@
 (def max-interaction-time 5000)
 (def min-loop-time 1000)
 (def max-loops 6000)
-(def max-time-outs 3)
+(def max-time-outs 5)
 (def batch-cycle 60)
 (def loops-for-success 1000)
 

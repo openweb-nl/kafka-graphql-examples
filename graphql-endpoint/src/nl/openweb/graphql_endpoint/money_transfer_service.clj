@@ -8,8 +8,7 @@
            (java.util UUID)))
 
 (def cmt-topic (or (System/getenv "KAFKA_CMT_TOPIC") "confirm_money_transfer"))
-(def mtc-topic (or (System/getenv "KAFKA_MTC_TOPIC") "money_transfer_confirmed"))
-(def mtf-topic (or (System/getenv "KAFKA_MTF_TOPIC") "money_transfer_failed"))
+(def mtf-topic (or (System/getenv "KAFKA_MTF_TOPIC") "money_transfer_feedback"))
 (def client-id (or (System/getenv "KAFKA_CLIENT_ID") "graphql-endpoint-money-transfer"))
 
 (defn v->map
@@ -78,7 +77,7 @@
   (start [this]
     (let [subscriptions (atom {:id 0 :map {}})
           transfer-requests (atom {})
-          stop-consume-f (clients/consume client-id client-id [mtc-topic mtf-topic] #(handle-reply % transfer-requests subscriptions))]
+          stop-consume-f (clients/consume client-id client-id mtf-topic #(handle-reply % transfer-requests subscriptions))]
       (-> this
           (assoc :subscriptions subscriptions)
           (assoc :transfer-requests transfer-requests)
