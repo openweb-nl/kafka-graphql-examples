@@ -1,25 +1,35 @@
 @startuml
+skinparam component {
+  BorderColor #A61D48
+  ArrowColor #A61D48
+}
+skinparam package {
+  BorderColor #181818
+}
+skinparam database {
+  BorderColor #A61D48
+}
 
 title Command handler
 
-package "nl.openweb.command-handler.core.clj" #Yellow {
-    component consumer as c
-    component producer as p
-    component "cmt-handler" as mth
-    component "cac-handler" as ach
+package "nl.openweb.command-handler.core.clj" #D4D4D4 {
+    component consumer as c #EFEFF3
+    component producer as p #EFEFF3
+    component "cmt-handler" as mth #EFEFF3
+    component "cac-handler" as ach #EFEFF3
 }
-package balancedb #LightBlue{
-    database balance
-    database cac
-    database cmt
+package balancedb #ABC8E7{
+    database balance #EFEFF3
+    database cac #EFEFF3
+    database cmt #EFEFF3
 }
-[Kafka cluster] as kc #Orange
+[Kafka cluster] as kc #F26724
 
 mth --> cmt :check/update status
 ach --> cac :check/update status
 mth --> balance :check/update balance
 ach --> balance :crates balance
-kc --> p :AccountCreationConfirmed,\nAccountCreationFailed,\nMoneyTransferConfirmed,\nMoneyTransferFailed and\nBalanceChanged
+kc <-- p :AccountCreationConfirmed,\nAccountCreationFailed,\nMoneyTransferConfirmed,\nMoneyTransferFailed and\nBalanceChanged
 c <-- kc :ConfirmAccountCreation\n and ConfirmMoneyTransfer
 
 @enduml

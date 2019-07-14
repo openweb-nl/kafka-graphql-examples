@@ -1,20 +1,30 @@
 @startuml
+skinparam sequence ActorBorderColor #A61D48
+skinparam component {
+  BorderColor #A61D48
+  ArrowColor #A61D48
+  FontSize 22
+  ArrowFontSize 10
+}
+skinparam database {
+  BorderColor #A61D48
+  FontSize 20
+}
 
 left to right direction
-title All connections
 
-[Kafka cluster] as kc #Orange
-[Zookeeper cluster] as zc #Orange
-[Schema registry] as sr #Orange
-[Synchronizer] as sy #Yellow
-[Heartbeat] as hb #Yellow
-[Command generator] as cg #Yellow
-[Command handler] as ch #Yellow
-[GraphQL endpoint] as ge #Yellow
-[Frontend server] as fs #LightGreen
-actor client as cl
-database balancedb as pgb #LightBlue
-database transactiondb as pgt #LightBlue
+[Kafka cluster] as kc #F26724
+[Zookeeper cluster] as zc #F26724
+[Schema registry] as sr #F26724
+[Synchronizer] as sy #D4D4D4
+[Heartbeat] as hb #D4D4D4
+[Command generator] as cg #D4D4D4
+[Command handler] as ch #D4D4D4
+[GraphQL endpoint] as ge #D4D4D4
+[Frontend server] as fs #31BEC2
+actor client as cl #EFEFF3
+database balancedb as pgb #ABC8E7
+database transactiondb as pgt #ABC8E7
 
 sy ..> sr : set schemas
 sy ..> kc : creates topics

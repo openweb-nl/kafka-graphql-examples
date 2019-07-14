@@ -2,15 +2,15 @@
 
 title Account creation service
 
-package "nl.openweb.graphql-endpoint.money-transfer-service.clj" as ts #Yellow {
-    database account as ac #LightBlue
-    component producer as p
-    component consumer as c
+package "nl.openweb.graphql-endpoint.money-transfer-service.clj" as ts #EFEFF3 {
+    database account as ac #ABC8E7
+    component producer as p #D4D4D4
+    component consumer as c #D4D4D4
 }
 
-[Kafka cluster] as kc #Orange
-actor client as cl
-component "schema-provider" as sp #Yellow
+[Kafka cluster] as kc #F26724
+actor client as cl #D4D4D4
+component "schema-provider" as sp #D4D4D4
 
 ac -> p :make request using uuid
 c <-- kc :consumes\lAccountCreationConfirmed\nand\nAccountCreationFailed
