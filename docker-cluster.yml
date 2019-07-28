@@ -96,7 +96,7 @@ services:
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     volumes:
       - open-bank-certs:/etc/kafka/secrets
-    mem_limit: 1500m
+    mem_limit: 2500m
     restart: always
 
   kafka-2:
@@ -128,7 +128,7 @@ services:
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     volumes:
       - open-bank-certs:/etc/kafka/secrets
-    mem_limit: 1500m
+    mem_limit: 2500m
     restart: always
 
   kafka-3:
@@ -160,7 +160,7 @@ services:
       CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
     volumes:
       - open-bank-certs:/etc/kafka/secrets
-    mem_limit: 1500m
+    mem_limit: 2500m
     restart: always
 
   schema-registry:
