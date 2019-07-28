@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-docker exec -i --user postgres $1 createdb -p $2 balancedb
+docker exec -i --user postgres "$1" createdb -p "$2" balancedb
 
-docker exec -i --user postgres $1 psql -p $2 balancedb -a  <<__END
+docker exec -i --user postgres "$1" psql -p "$2" balancedb -a  <<__END
 create user clojure_ch password 'open-bank';
 __END
 
-docker exec -i $1 psql -Uclojure_ch -p $2 balancedb -a <<__END
+docker exec -i "$1" psql -Uclojure_ch -p "$2" balancedb -a <<__END
 drop table if exists balance;
 drop table if exists cac;
 drop table if exists cmt;
@@ -54,13 +54,13 @@ create table cmt(
     created_at timestamp not null default current_timestamp);
 __END
 
-docker exec -i --user postgres $1 createdb -p $2 transactiondb
+docker exec -i --user postgres "$1" createdb -p "$2" transactiondb
 
-docker exec -i --user postgres $1 psql -p $2 transactiondb -a  <<__END
+docker exec -i --user postgres "$1" psql -p "$2" transactiondb -a  <<__END
 create user clojure_ge password 'open-bank';
 __END
 
-docker exec -i $1 psql -Uclojure_ge -p $2 transactiondb -a <<__END
+docker exec -i "$1" psql -Uclojure_ge -p "$2" transactiondb -a <<__END
 drop table if exists transaction;
 
 create table transaction(
