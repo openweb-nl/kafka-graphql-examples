@@ -46,13 +46,8 @@ services:
       - command-generator
       - command-handler
     environment:
-      KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
+      KAFKA_BROKERS: "kafka-1:19092,kafka-2:19094,kafka-3:19096"
       SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      SSL_KEYSTORE_LOCATION: "kafka.heartbeat.keystore.jks"
-      SSL_TRUSTSTORE_LOCATION: "kafka.heartbeat.truststore.jks"
-      SSL_PASSWORD: "openbanksafe"
-    volumes:
-      - open-bank-certs:/etc/kafka/secrets
     mem_limit: 150m
     restart: always
 
