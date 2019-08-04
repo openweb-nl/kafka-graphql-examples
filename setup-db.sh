@@ -2,7 +2,7 @@
 
 docker exec -i --user postgres "$1" createdb -p "$2" balancedb
 
-docker exec -i --user postgres "$1" psql -p "$2" balancedb -a  <<__END
+docker exec -i --user postgres "$1" psql -p "$2" balancedb -a <<__END
 create user clojure_ch password 'open-bank';
 __END
 
@@ -56,7 +56,7 @@ __END
 
 docker exec -i --user postgres "$1" createdb -p "$2" transactiondb
 
-docker exec -i --user postgres "$1" psql -p "$2" transactiondb -a  <<__END
+docker exec -i --user postgres "$1" psql -p "$2" transactiondb -a <<__END
 create user clojure_ge password 'open-bank';
 __END
 
