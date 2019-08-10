@@ -1,4 +1,5 @@
 @startuml
+skinparam defaultFontName Roboto
 skinparam component {
   BorderColor #A61D48
   ArrowColor #A61D48

@@ -1,4 +1,5 @@
 @startuml
+skinparam defaultFontName Roboto
 skinparam sequence ActorBorderColor #A61D48
 skinparam component {
   BorderColor #A61D48
