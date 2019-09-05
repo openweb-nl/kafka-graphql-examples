@@ -22,7 +22,7 @@ for f in ca-root.crt command-handler.key command-handler-signed.pem; do
   docker cp ${f} dummy:/root/
 done
 
-for i in kafka-1 kafka-2 kafka-3 command-handler command-generator heartbeat graphql-endpoint; do
+for i in kafka-1 kafka-2 kafka-3 command-handler graphql-endpoint; do
   echo ${i}
   # Create keystores
   keytool -genkey -noprompt \

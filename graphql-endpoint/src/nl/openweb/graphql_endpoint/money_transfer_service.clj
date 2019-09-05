@@ -24,13 +24,11 @@
      :reason  (.getReason v)}))
 
 (defn handle-reply
-  [^ConsumerRecord cr transfer-requests subscriptions]
+  [^ConsumerRecord cr subscriptions]
   (let [v-map (v->map (.value cr))]
-    (when (get @transfer-requests (:uuid v-map))
-      (swap! transfer-requests assoc (:uuid v-map) v-map)
-      (doseq [[s-id source-stream] (vals (:map @subscriptions))]
-        (if (= s-id (:uuid v-map))
-          (source-stream v-map))))))
+    (doseq [[s-id source-stream] (vals (:map @subscriptions))]
+      (if (= s-id (:uuid v-map))
+        (source-stream v-map)))))
 
 (defn add-stream
   [subscriptions id source-stream]
@@ -57,18 +55,13 @@
 
 (defn money-transfer
   [db source-stream args]
-  (let [uuid (:uuid args)]
-    (try
-      (UUID/fromString uuid)
-      (if-let [past-request (get @(:transfer-requests db) uuid)]
-        (if (empty? past-request)
-          (add-sub (:subscriptions db) uuid source-stream)
-          (source-stream past-request))
-        (let [sub-id (add-sub (:subscriptions db) uuid source-stream)]
-          (swap! (:transfer-requests db) assoc uuid {})
-          (clients/produce (get-in db [:kafka-producer :producer]) cmt-topic (create-money-transfer (UUID/fromString uuid) args))
-          sub-id))
-      (catch IllegalArgumentException e (log/warn uuid "is not valid" e)))))
+  (try
+    (let [uuid-arg (:uuid args)
+          uuid (UUID/fromString uuid-arg)
+          sub-id (add-sub (:subscriptions db) uuid-arg source-stream)]
+      (clients/produce (get-in db [:kafka-producer :producer]) cmt-topic (create-money-transfer uuid args))
+      sub-id)
+    (catch IllegalArgumentException e (log/warn (:uuid args) "is not valid" e))))
 
 (defrecord MoneyTransferService []
 
@@ -76,11 +69,9 @@
 
   (start [this]
     (let [subscriptions (atom {:id 0 :map {}})
-          transfer-requests (atom {})
-          stop-consume-f (clients/consume client-id client-id mtf-topic #(handle-reply % transfer-requests subscriptions))]
+          stop-consume-f (clients/consume client-id client-id mtf-topic #(handle-reply % subscriptions))]
       (-> this
           (assoc :subscriptions subscriptions)
-          (assoc :transfer-requests transfer-requests)
           (assoc :stop-consume stop-consume-f))))
 
   (stop [this]
@@ -89,14 +80,13 @@
       (source-stream nil))
     (-> this
         (assoc :subscriptions nil)
-        (assoc :transfer-requests nil)
         (assoc :stop-consume nil))))
 
 (defn new-service
   []
   {:money-transfer-service (-> {}
-             map->MoneyTransferService
-             (component/using [:kafka-producer]))})
+                               map->MoneyTransferService
+                               (component/using [:kafka-producer]))})
 
 (defn stop-transaction-subscription
   [db id]

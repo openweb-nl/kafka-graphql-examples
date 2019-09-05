@@ -2,27 +2,10 @@
 version: '2.2'
 services:
 
-  command-generator:
-    build:
-      context: command-generator
-    container_name: command-generator
-    environment:
-      KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
-      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      SSL_KEYSTORE_LOCATION: "kafka.command-generator.keystore.jks"
-      SSL_TRUSTSTORE_LOCATION: "kafka.command-generator.truststore.jks"
-      SSL_PASSWORD: "openbanksafe"
-    volumes:
-      - open-bank-certs:/etc/kafka/secrets
-    mem_limit: 300m
-    restart: always
-
   command-handler:
     build:
       context: command-handler
     container_name: command-handler
-    depends_on:
-      - command-generator
     environment:
       DB_PORT: "25432"
       DB_HOSTNAME: "db"
@@ -34,21 +17,6 @@ services:
     volumes:
       - open-bank-certs:/etc/kafka/secrets
     mem_limit: 300m
-    restart: always
-
-  heartbeat:
-    build:
-      context: heartbeat
-    container_name: heartbeat
-    ports:
-      - "17888:17888"
-    depends_on:
-      - command-generator
-      - command-handler
-    environment:
-      KAFKA_BROKERS: "kafka-1:19092,kafka-2:19094,kafka-3:19096"
-      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-    mem_limit: 150m
     restart: always
 
   graphql-endpoint:

@@ -1,0 +1,21 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 20
+
+actor client as cl #EFEFF3
+entity "GraphQL endpoint" as ge #Yellow
+database transactiondb as pgt #LightBlue
+entity "Kafka" as ka #LightGrey
+
+cl -> cl : Fill in amount, to, and description
+cl -> ge : Subscribe to money_transfer stream
+ge -> ka : Create a ConfirmMoneyTransfer
+ka -> ka : Process
+ge -> ka : Polling records
+ka -> ge : Sends records one being a\nMoneyTransferConfirmed
+ge -> ge : Filter on uuid
+ge -> cl : Send MoneyTransferResult
+cl -> cl : Display error
+cl -> ge : End subscription get_account
+
+@enduml

@@ -53,12 +53,6 @@
   (let [new-subscriptions (swap! subscriptions add-stream uuid source-stream)]
     (:id new-subscriptions)))
 
-(defn add-client
-  [data username password uuid]
-  (let [new-clients (assoc (:clients data) username {:password password})
-        new-pending (assoc (:pending data) uuid username)]
-    {:clients new-clients :pending new-pending}))
-
 (defn find-account-by-username
   [db username]
   (with-open [conn (j/get-connection (get-in db [:db :datasource]))]
