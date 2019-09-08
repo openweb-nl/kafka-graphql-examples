@@ -61,7 +61,7 @@
       [:span.icon {:style {:color "#24292e"}} [:i.mdi.mdi-24px.mdi-github-circle]]]]]])
 
 (defn deposit-button
-  [iban amount]
+  [iban username amount]
   (let [uuid (str (random-uuid))]
     [:p
      {:key amount}
@@ -69,11 +69,12 @@
       {:id       (str "deposit-" amount)
        :on-click #(re-frame/dispatch [::re-graph/subscribe
                                       (keyword (str "deposit-" uuid))
-                                      "($amount: Int! $uuid: String! $iban: String!){
-                                            money_transfer(amount: $amount descr: \"deposit by re-graph\"
+                                      "($amount: Int! $uuid: String! $username: String! $iban: String!){
+                                            money_transfer(amount: $amount username: $username  descr: \"deposit by re-graph\"
                                            from: \"cash\" token: \"cash\" to: $iban uuid: $uuid)
                                            {reason success uuid}}"
                                       {:amount amount
+                                       :username username
                                        :iban   iban
                                        :uuid   uuid}
                                       [:open-bank.events/on-deposit]])}
@@ -85,7 +86,7 @@
   (if (:iban login-status)
     [:div.content
      (for [amount [1000 2000 5000 10000 20000 50000]]
-       (deposit-button (:iban login-status) amount))]
+       (deposit-button (:iban login-status) (:username login-status) amount))]
     [:p.notification.is-primary "Login to create/access your account"]))
 
 (defn iban-button
@@ -270,16 +271,18 @@
                                    (.reset (.getElementById js/document "transfer-form"))
                                    (re-frame/dispatch [::re-graph/subscribe
                                                        (keyword (str "transfer-" uuid))
-                                                       "($amount: Int! $uuid: String! $to: String! $token: String! $from: String! $descr: String!){
-                                                             money_transfer(amount: $amount descr: $descr
-                                                            from: $from token: $token to: $to uuid: $uuid)
-                                                            {reason success uuid}}"
-                                                       {:amount (int (* 100 (js/parseFloat @amount)))
-                                                        :from   (:iban login-status)
-                                                        :token  (:token login-status)
-                                                        :to     @to
-                                                        :descr  @descr
-                                                        :uuid   uuid}
+                                                       "($amount: Int! $uuid: String! $username: String! $to: String! $token: String! $from: String! $descr: String!){
+                                                          money_transfer(amount: $amount uuid: $uuid username: $username to: $to token: $token from: $from descr: $descr)
+                                                          {reason success uuid}}"
+                                                       {:amount   (-> (js/parseFloat @amount)
+                                                                      (* 100)
+                                                                      int)
+                                                        :username (:username login-status)
+                                                        :from     (:iban login-status)
+                                                        :token    (:token login-status)
+                                                        :to       @to
+                                                        :descr    @descr
+                                                        :uuid     uuid}
                                                        [:open-bank.events/on-transfer]]))}
                      {:disabled true})
                    "Transfer"]]]

@@ -24,7 +24,7 @@
   :MoneyTransferResult
   {:description "The feedback from a money transfer request"
    :fields      {
-                 :uuid {:type String :description "Uuid used for the request"}
+                 :uuid    {:type String :description "Uuid used for the request"}
                  :success {:type Boolean :description "Whether the transfer succeeded"}
                  :reason  {:type String :description "The reason the transfer failed."}
                  }}}
@@ -61,22 +61,26 @@
   :get_account
   {:type        :AccountResult
    :description "Get the result of account creation, account may be just created or already exist"
-   :args        {:username {:type (non-null String)}
-                 :password {:type (non-null String)}}
+   :args        {:username {:type        (non-null String)
+                            :description "The username used to log in some other time"}
+                 :password {:type        (non-null String)
+                            :description "Password needed to log in some other time"}}
    :stream      :get-account}
   :money_transfer
   {:type        :MoneyTransferResult
    :description "Try to make a money transfer"
-   :args        {:uuid   {:type        (non-null String)
-                           :description "This will be used to prevent duplication, and to allow to retrieve the status later on"}
-                 :token   {:type        (non-null String)
-                           :description "The token needed to authenticate the transaction"}
-                 :amount {:type        (non-null Int)
-                           :description "The amount in euro cents to transfer"}
-                 :from {:type        (non-null String)
-                          :description "The iban of the account the money is debited"}
-                 :to {:type        (non-null String)
-                          :description "The iban of the account the money is credited"}
-                 :descr  {:type        (non-null String)
-                          :description "The description of the money transfer"}}
+   :args        {:uuid     {:type        (non-null String)
+                            :description "This will be used to prevent duplication, and to allow to retrieve the status later on"}
+                 :username {:type        (non-null String)
+                            :description "The username linked to the account"}
+                 :token    {:type        (non-null String)
+                            :description "The token needed to authenticate the transaction"}
+                 :amount   {:type        (non-null Int)
+                            :description "The amount in euro cents to transfer"}
+                 :from     {:type        (non-null String)
+                            :description "The iban of the account the money is debited"}
+                 :to       {:type        (non-null String)
+                            :description "The iban of the account the money is credited"}
+                 :descr    {:type        (non-null String)
+                            :description "The description of the money transfer"}}
    :stream      :money-transfer}}}

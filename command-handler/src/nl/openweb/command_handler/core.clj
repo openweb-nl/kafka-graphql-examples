@@ -3,7 +3,6 @@
             [nl.openweb.topology.clients :as clients]
             [nl.openweb.topology.value-generator :as vg])
   (:import (nl.openweb.data ConfirmAccountCreation AccountCreationConfirmed AccountCreationFailed MoneyTransferFailed ConfirmMoneyTransfer MoneyTransferConfirmed BalanceChanged)
-           (org.apache.avro.specific SpecificRecordBase)
            (org.apache.kafka.clients.consumer ConsumerRecord))
   (:gen-class))
 
@@ -21,7 +20,7 @@
         feedback (if (:reason result)
                    (AccountCreationFailed. (.getId value) (:reason result))
                    (AccountCreationConfirmed. (.getId value) (:iban result) (:token result) (.getAType value)))]
-    (clients/produce producer acf-topic feedback)))
+    (clients/produce producer acf-topic key feedback)))
 
 (defn ->bc
   [from ^ConfirmMoneyTransfer cmt balance-row]
@@ -36,12 +35,12 @@
   [producer key ^ConfirmMoneyTransfer value]
   (let [result (db/transfer value)]
     (if-let [from (:from result)]
-      (clients/produce producer bc-topic (->bc true value from)))
+      (clients/produce producer bc-topic key (->bc true value from)))
     (if-let [to (:to result)]
-      (clients/produce producer bc-topic (->bc false value to)))
+      (clients/produce producer bc-topic key (->bc false value to)))
     (if-let [reason (:reason result)]
-      (clients/produce producer mtf-topic (MoneyTransferFailed. (.getId value) reason))
-      (clients/produce producer mtf-topic (MoneyTransferConfirmed. (.getId value)))
+      (clients/produce producer mtf-topic key (MoneyTransferFailed. (.getId value) reason))
+      (clients/produce producer mtf-topic key (MoneyTransferConfirmed. (.getId value)))
       )))
 
 (defn handle-all

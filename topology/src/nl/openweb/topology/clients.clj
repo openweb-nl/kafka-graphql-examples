@@ -1,10 +1,7 @@
 (ns nl.openweb.topology.clients
-  (:require [clj-time.local :as time-local]
-            [nl.openweb.topology.core :as core]
-            [nl.openweb.topology.value-generator :as vg])
   (:import (io.confluent.kafka.serializers KafkaAvroSerializer AbstractKafkaAvroSerDeConfig KafkaAvroDeserializer KafkaAvroDeserializerConfig)
            (io.confluent.kafka.serializers.subject TopicRecordNameStrategy)
-           (java.util Properties)
+           (java.util Properties UUID)
            (org.apache.kafka.clients CommonClientConfigs)
            (org.apache.kafka.clients.consumer ConsumerConfig KafkaConsumer ConsumerRecords ConsumerRecord)
            (org.apache.kafka.clients.producer ProducerRecord KafkaProducer ProducerConfig)
@@ -20,21 +17,9 @@
 (def truststore-location(System/getenv "SSL_TRUSTSTORE_LOCATION"))
 (def ssl-password (System/getenv "SSL_PASSWORD"))
 
-(defn get-key
-  [topic-name value]
-  (if-let [key (nth (core/get-topic topic-name) 4)]
-    (cond
-      (= key :id) (-> (.getId value)
-                      .bytes
-                      vg/bytes->uuid
-                      .toString)
-      (= key :now) (str (time-local/to-local-date-time (time-local/local-now)))
-      (= key :iban) (.getIban value)
-      :else nil)))
-
 (defn produce
-  [^KafkaProducer producer ^String topic-name ^SpecificRecord record]
-  (if-let [pr (ProducerRecord. topic-name (get-key topic-name record) record)]
+  [^KafkaProducer producer ^String topic-name ^UUID key ^SpecificRecord value]
+  (if-let [pr (ProducerRecord. topic-name key value)]
     (.send producer pr)))
 
 (defn optionally-add-ssl

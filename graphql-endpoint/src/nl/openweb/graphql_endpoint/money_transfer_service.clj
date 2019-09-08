@@ -59,7 +59,7 @@
     (let [uuid-arg (:uuid args)
           uuid (UUID/fromString uuid-arg)
           sub-id (add-sub (:subscriptions db) uuid-arg source-stream)]
-      (clients/produce (get-in db [:kafka-producer :producer]) command-topic (create-money-transfer uuid args))
+      (clients/produce (get-in db [:kafka-producer :producer]) command-topic (:username args) (create-money-transfer uuid args))
       sub-id)
     (catch IllegalArgumentException e (log/warn (:uuid args) "is not valid" e))))
 
