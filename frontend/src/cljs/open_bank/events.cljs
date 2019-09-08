@@ -147,8 +147,8 @@
   ::check-valid-transfer-form
   (fn [db [_ amount to descr]]
     (let [old-valid (get-in db [:transfer-data :valid])
-          int-amount (js/parseInt amount)
-          new-valid (and (pos? int-amount) (< int-amount 2147483648) (> (count to) 7) (pos? (count descr)))]
+          float-amount (js/parseFloat amount)
+          new-valid (and (pos? float-amount) (< float-amount 1000000) (> (count to) 7) (pos? (count descr)))]
       (if
         (= old-valid new-valid)
         db

@@ -7,7 +7,7 @@
            (nl.openweb.data Uuid MoneyTransferConfirmed MoneyTransferFailed MoneyTransferConfirmed ConfirmMoneyTransfer)
            (java.util UUID)))
 
-(def cmt-topic (or (System/getenv "KAFKA_CMT_TOPIC") "confirm_money_transfer"))
+(def command-topic (or (System/getenv "KAFKA_COMMAND_TOPIC") "commands"))
 (def mtf-topic (or (System/getenv "KAFKA_MTF_TOPIC") "money_transfer_feedback"))
 (def client-id (or (System/getenv "KAFKA_CLIENT_ID") "graphql-endpoint-money-transfer"))
 
@@ -59,7 +59,7 @@
     (let [uuid-arg (:uuid args)
           uuid (UUID/fromString uuid-arg)
           sub-id (add-sub (:subscriptions db) uuid-arg source-stream)]
-      (clients/produce (get-in db [:kafka-producer :producer]) cmt-topic (create-money-transfer uuid args))
+      (clients/produce (get-in db [:kafka-producer :producer]) command-topic (create-money-transfer uuid args))
       sub-id)
     (catch IllegalArgumentException e (log/warn (:uuid args) "is not valid" e))))
 

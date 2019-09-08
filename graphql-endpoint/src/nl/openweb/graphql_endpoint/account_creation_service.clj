@@ -9,7 +9,7 @@
            (nl.openweb.data AccountCreationConfirmed AccountCreationFailed ConfirmAccountCreation Uuid Atype)
            (java.util UUID)))
 
-(def cac-topic (or (System/getenv "KAFKA_CAC_TOPIC") "confirm_account_creation"))
+(def command-topic (or (System/getenv "KAFKA_COMMAND_TOPIC") "commands"))
 (def acf-topic (or (System/getenv "KAFKA_ACF_TOPIC") "account_creation_feedback"))
 (def client-id (or (System/getenv "KAFKA_CLIENT_ID") "graphql-endpoint-accounts"))
 
@@ -71,14 +71,14 @@
     (if (crypto/check password (:account/password account))
       (do
         (add-sub (:subscriptions db) (:account/uuid account) source-stream)
-        (clients/produce (get-in db [:kafka-producer :producer]) cac-topic (ConfirmAccountCreation. (Uuid. (uuid->bytes (:account/uuid account))) Atype/MANUAL)))
+        (clients/produce (get-in db [:kafka-producer :producer]) command-topic (ConfirmAccountCreation. (Uuid. (uuid->bytes (:account/uuid account))) Atype/MANUAL)))
       (source-stream {:iban   nil
                       :token  nil
                       :reason "incorrect password"}))
     (let [uuid (UUID/randomUUID)
           sub-id (add-sub (:subscriptions db) uuid source-stream)]
       (insert-account! (get-in db [:db :datasource]) username password uuid)
-      (clients/produce (get-in db [:kafka-producer :producer]) cac-topic (ConfirmAccountCreation. (Uuid. (uuid->bytes uuid)) Atype/MANUAL))
+      (clients/produce (get-in db [:kafka-producer :producer]) command-topic (ConfirmAccountCreation. (Uuid. (uuid->bytes uuid)) Atype/MANUAL))
       sub-id)))
 
 (defrecord AccountCreationService []

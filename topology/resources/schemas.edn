@@ -1,5 +1,4 @@
-{:records {:Heartbeat                [{:name "beat" :type :long}]
-           :ConfirmAccountCreation   [:id :a-type]
+{:records {:ConfirmAccountCreation   [:id :a-type]
            :AccountCreationConfirmed [:id :iban :token :a-type]
            :AccountCreationFailed    [:id :reason]
            :ConfirmMoneyTransfer     [:id :token :amount {:name "from" :type :string} {:name "to" :type :string} :description]

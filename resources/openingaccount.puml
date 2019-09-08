@@ -12,7 +12,7 @@ ge -> pgt : Create account with uuid
 ge -> ka : Create a ConfirmAccountCreation
 ka -> ka : Process
 ge -> ka : Polling records
-ka -> ge : Sends records one being a\nAccountCreationConfirmed
+ka -> ge : Sends records one being an AccountCreationConfirmed
 ge -> ge : Filter on uuid
 ge -> cl : Send AccountResult
 cl -> cl : Store iban and token

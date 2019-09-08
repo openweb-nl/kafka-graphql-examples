@@ -7,8 +7,8 @@
 (defonce driver (atom nil))
 (def deposit-keys [:deposit-1000 :deposit-2000 :deposit-5000 :deposit-10000 :deposit-20000])
 (def deposit-values ["€10,00" "€20,00" "€50,00" "€100,00" "€200,00"])
-(def transaction-keys [1111 2323 3489 9999 21078])
-(def transaction-descriptions ["foo" "bar" "baz" "present" "fine"])
+(def transaction-keys ["11,11" "23,23" "34,89" "99,99" "210,78"])
+(def transaction-descriptions ["drinks" "parking" "groceries" "present" "fine"])
 (def transaction-values ["€11,11" "€23,23" "€34,89" "€99,99" "€210,78"])
 (def time-out (atom 5))
 

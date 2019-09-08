@@ -12,10 +12,10 @@ cl -> ge : Subscribe to money_transfer stream
 ge -> ka : Create a ConfirmMoneyTransfer
 ka -> ka : Process
 ge -> ka : Polling records
-ka -> ge : Sends records one being a\nMoneyTransferConfirmed
+ka -> ge : Sends records one being a MoneyTransferConfirmed
 ge -> ge : Filter on uuid
 ge -> cl : Send MoneyTransferResult
 cl -> cl : Display error
-cl -> ge : End subscription get_account
+cl -> ge : End subscription money_transfer
 
 @enduml
