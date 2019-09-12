@@ -1,4 +1,4 @@
 {
- :category-name "Language"
- :mapping {"Clojure" "clojure-*"}
+ :category-name "linger.ms config"
+ :mapping       {"100" "linger-ms-100-*"}
  }

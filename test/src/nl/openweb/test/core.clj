@@ -4,7 +4,8 @@
             [nl.openweb.test.load :as load]
             [nl.openweb.test.interactions :as interactions]
             [nl.openweb.test.file :as file]
-            [nl.openweb.test.process :as process])
+            [nl.openweb.test.process :as process]
+            [taoensso.timbre :as log])
   (:import (java.time Instant))
   (:gen-class))
 
@@ -12,13 +13,12 @@
 (def min-loop-time 1000)
 (def max-loops 6000)
 (def max-time-outs 5)
-(def batch-cycle 60)
+(def seconds-to-generate-generator 20)
 (def loops-for-success 1000)
 
 (defn init
   []
   (process/init)
-  (load/init)
   (file/init)
   (interactions/prep max-interaction-time))
 
@@ -26,24 +26,23 @@
   [loop-number]
   (interactions/close)
   (file/close)
-  (load/close)
   (process/close)
   (if (> loop-number loops-for-success)
     (System/exit 0)
     (System/exit 1)))
 
-(defn optionally-increase-batch-size
-  [batch-size loop-number]
-  (if (= 0 (mod loop-number batch-cycle))
-    (let [new-batch-size (inc batch-size)]
-      (load/set-batch-size new-batch-size)
-      (println "set batch-size to" new-batch-size)
-      new-batch-size)
-    batch-size))
+(defn optionally-increase-generators
+  [generators-count loop-number]
+  (if (= 0 (mod loop-number seconds-to-generate-generator))
+    (let [new-generators (inc generators-count)]
+      (load/add-generator generators-count)
+      (println "added generator, total is now" new-generators)
+      new-generators)
+    generators-count))
 
 (defn add-row
-  [loop-number current-time interaction-time batch-size time-outs]
-  (file/add-row loop-number current-time interaction-time batch-size)
+  [loop-number current-time interaction-time generators-count time-outs]
+  (file/add-row loop-number current-time interaction-time generators-count)
   time-outs)
 
 (defn time-out
@@ -53,23 +52,23 @@
     new-time-outs))
 
 (defn add-row-or-time-out
-  [loop-number batch-size time-outs interaction-time current-time]
+  [loop-number generators-count time-outs interaction-time current-time]
   (if (> max-interaction-time interaction-time)
-    (add-row loop-number current-time interaction-time batch-size time-outs)
+    (add-row loop-number current-time interaction-time generators-count time-outs)
     (time-out current-time time-outs)))
 
 (defn analytics-loop
-  [start loop-number batch-size time-outs]
+  [start loop-number generators-count time-outs]
   (let [interaction-time (interactions/safe-run loop-number)
         current-time (Instant/now)
-        new-time-outs (add-row-or-time-out loop-number batch-size time-outs interaction-time current-time)
+        new-time-outs (add-row-or-time-out loop-number generators-count time-outs interaction-time current-time)
         millis-till-next (- (+ start (* min-loop-time loop-number)) (inst-ms current-time))]
     (if (pos? millis-till-next) (Thread/sleep millis-till-next))
     (if
       (and
         (> max-time-outs new-time-outs)
         (> max-loops loop-number))
-      (recur start (inc loop-number) (optionally-increase-batch-size batch-size loop-number) new-time-outs)
+      (recur start (inc loop-number) (optionally-increase-generators generators-count loop-number) new-time-outs)
       loop-number)))
 
 (defn do-tests

@@ -10,7 +10,7 @@
 (defonce rows (atom []))
 (defonce writer (atom nil))
 (defonce keep-writing (atom true))
-(def base-file-name "clojure-ssl-")
+(def base-file-name "linger-ms-100-")
 
 (defn get-path
   ([]
@@ -19,18 +19,18 @@
    (str "resources/" name ".edn")))
 
 (defn add-row
-  [loop-number current-time interaction-time batch-size]
-  (swap! rows conj [loop-number current-time interaction-time batch-size]))
+  [loop-number current-time interaction-time generators-count]
+  (swap! rows conj [loop-number current-time interaction-time generators-count]))
 
 (defn add
   [line]
   (spit @file-name (str line "\n") :append true))
 
 (defn write-row
-  [[loop-number current-time interaction-time batch-size]]
+  [[loop-number current-time interaction-time generators-count]]
   (if (= 0 (mod loop-number 20))
-    (add (into [loop-number (inst-ms current-time) interaction-time (* 10 batch-size) (load/get-counter)] (process/get-info)))
-    (add [loop-number (inst-ms current-time) interaction-time (* 10 batch-size)])))
+    (add (into [loop-number (inst-ms current-time) interaction-time generators-count (load/get-latencies)] (process/get-info)))
+    (add [loop-number (inst-ms current-time) interaction-time generators-count])))
 
 (defn write
   []
@@ -39,8 +39,7 @@
       (if
         (empty? list)
         (Thread/sleep 1000)
-        (doseq [row list]
-          (write-row row))))
+        (doseq [row list] (write-row row))))
     (recur)))
 
 (defn init

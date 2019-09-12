@@ -1,15 +1,8 @@
-(ns nl.openweb.test.load)
+(ns nl.openweb.test.load
+  (:require [nl.openweb.test.generator :as generator]))
 
-(defn init [])
+(def latencies (atom []))
 
-(defn get-counter
-  "todo give back instances running"
-  []
-  1)
+(defn add-generator [generator-count] (generator/init "ws://localhost:8888/graphql-ws" generator-count latencies))
 
-(defn close [])
-
-(defn set-batch-size
-  "todo implement, probably just add one executor"
-  [new-batch-size]
-  )
+(defn get-latencies [] (first (reset-vals! latencies [])))
