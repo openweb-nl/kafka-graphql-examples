@@ -73,10 +73,10 @@
                                             money_transfer(amount: $amount username: $username  descr: \"deposit by re-graph\"
                                            from: \"cash\" token: \"cash\" to: $iban uuid: $uuid)
                                            {reason success uuid}}"
-                                      {:amount amount
+                                      {:amount   amount
                                        :username username
-                                       :iban   iban
-                                       :uuid   uuid}
+                                       :iban     iban
+                                       :uuid     uuid}
                                       [:open-bank.events/on-deposit]])}
       (str "deposit " (/ amount 100) " euro")]]))
 
@@ -155,7 +155,13 @@
     [:li [:a {:href "average-latency.html" :target "_blank"} "Avg latency"]]
     [:li [:a {:href "max-latency.html" :target "_blank"} "Max latency"]]
     [:li [:a {:href "min-latency.html" :target "_blank"} "Min latency"]]
-    [:li [:a {:href "min-count.html" :target "_blank"} "Heartbeats"]]
+    [:li [:a {:href "99-latency.html" :target "_blank"} "99 percentile latency"]]
+    [:li [:a {:href "average-generator-latency.html" :target "_blank"} "Avg latency generator"]]
+    [:li [:a {:href "max-generator-latency.html" :target "_blank"} "Max latency generator"]]
+    [:li [:a {:href "min-generator-latency.html" :target "_blank"} "Min latency generator"]]
+    [:li [:a {:href "99-generator-latency.html" :target "_blank"} "99 percentile latency generator"]]
+    [:li [:a {:href "transactions.html" :target "_blank"} "Total amount of transactions"]]
+    [:li [:a {:href "transactions.html" :target "_blank"} "Transactions per second"]]
     [:li [:a {:href "average-db-cpu.html" :target "_blank"} "Avg db cpu"]]
     [:li [:a {:href "average-db-mem.html" :target "_blank"} "Avg db memory"]]
     [:li [:a {:href "average-ch-cpu.html" :target "_blank"} "Avg ch cpu"]]

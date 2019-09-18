@@ -4,8 +4,7 @@
             [nl.openweb.test.load :as load]
             [nl.openweb.test.interactions :as interactions]
             [nl.openweb.test.file :as file]
-            [nl.openweb.test.process :as process]
-            [taoensso.timbre :as log])
+            [nl.openweb.test.process :as process])
   (:import (java.time Instant))
   (:gen-class))
 
@@ -13,7 +12,7 @@
 (def min-loop-time 1000)
 (def max-loops 6000)
 (def max-time-outs 5)
-(def seconds-to-generate-generator 20)
+(def seconds-to-generate-generator 60)
 (def loops-for-success 1000)
 
 (defn init

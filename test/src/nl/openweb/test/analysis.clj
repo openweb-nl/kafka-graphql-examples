@@ -1,8 +1,7 @@
 (ns nl.openweb.test.analysis
   (:require [kixi.stats.core :as kixi]
             [kixi.stats.distribution :refer [quantile]]
-            [oz.core :as oz]
-            [clojure.tools.logging :as log]))
+            [oz.core :as oz]))
 
 (defn valid
   [row nth-in-row]
@@ -39,7 +38,6 @@
     (quantile distribution percentile)))
 
 (defn vega-item [category [generator-count data-rows]]
-  (log/info "data:\n" data-rows)
   {
    :category                  category
    :generators                generator-count
@@ -53,6 +51,8 @@
    :max-generator-latency     (get-statistic data-rows 4 kixi/max)
    :min-generator-latency     (get-statistic data-rows 4 kixi/min)
    :99-generator-latency      (get-generator-latency-percentile data-rows 0.99)
+   :transactions              (+ (count data-rows) (get-statistic data-rows 4 kixi/count))
+   :transactions-per-second   (+ 1 (/ (get-statistic data-rows 4 kixi/count) (count data-rows)))
    :average-db-cpu            (get-statistic data-rows 5 kixi/mean)
    :err-db-cpu                (get-statistic data-rows 5 kixi/standard-error)
    :average-db-mem            (get-statistic data-rows 6 kixi/mean)
@@ -137,7 +137,9 @@
               "average-generator-latency" "Average generator latency (ms)"
               "max-generator-latency"     "Max generator latency (ms)"
               "min-generator-latency"     "Min generator latency (ms)"
-              "99-genrator-latency"       ".99 percentile generator latency (ms)"
+              "99-generator-latency"      ".99 percentile generator latency (ms)"
+              "transactions"              "Total amount of transactions (count)"
+              "transactions-per-second"   "Transactions per second (count/second)"
               "average-db-cpu"            "Average cpu database (% from total)"
               "average-db-mem"            "Average mem database (MiB)"
               "average-ch-cpu"            "Average cpu command-handler (% from total)"
@@ -146,7 +148,7 @@
               "average-kb-mem"            "Average mem kafka broker (MiB)"
               "average-ge-cpu"            "Average cpu graphql endpoint (% from total)"
               "average-ge-mem"            "Average mem graphql endpoint (MiB)"
-              "data-points"               "Amount of measurements"})
+              "data-points"               "Amount of measurements (count)"})
 
 (defn process
   [category-name data]
