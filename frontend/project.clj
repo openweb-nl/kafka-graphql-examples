@@ -5,7 +5,9 @@
                  [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.9"]
-                 [re-graph "0.1.10"]]
+                 [re-graph "0.1.10"]
+                 [bidi "2.1.6"]
+                 [kibu/pushy "0.3.8"]]
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-sass "0.5.0"]]
   :min-lein-version "2.5.3"

@@ -1,23 +1,24 @@
 (ns open-bank.templates
   (:require [clojure.string :as string]
             [open-bank.events :as events]
+            [open-bank.routes :as routes]
             [re-frame.core :as re-frame]
             [re-graph.core :as re-graph]))
 
 (defn navbar-item
   [nav selected-nav]
   [:a.navbar-item
-   {:class    (if (= selected-nav nav) "is-active")
-    :on-click #(re-frame/dispatch [::events/set-selected-nav nav])
-    :key      nav} (string/capitalize (name nav))])
+   {:class (if (= selected-nav nav) "is-active")
+    :href  (routes/url-for nav)
+    :key   nav} (string/capitalize (name nav))])
 
 (defn nav-bar
   [selected-nav expand show-left]
   [:nav#nav-bar.navbar.is-fixed-top {:role "navigation" :aria-label "main navigation"}
    [:div.navbar-brand
     [:a.navbar-item
-     {:class    (if (= selected-nav :home) "is-active")
-      :on-click #(re-frame/dispatch [::events/set-selected-nav :home])}
+     {:class (if (= selected-nav :home) "is-active")
+      :href  (routes/url-for :home)}
      [:img {:src "/img/logo.svg" :style {:width "140px"}}]]
     [:a.navbar-item.is-hidden-tablet
      {:on-click #(re-frame/dispatch [::events/toggle-show-left])}

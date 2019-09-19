@@ -6,6 +6,7 @@
             [open-bank.db :refer [default-db]]
             [open-bank.transactions :refer [get-dispatches]]
             [open-bank.events :as events]
+            [open-bank.routes :as routes]
             [open-bank.views :as views]))
 
 (defn dev-setup []
@@ -19,6 +20,7 @@
                   (.getElementById js/document "app")))
 
 (defn ^:export init []
+  (routes/app-routes)
   (re-frame/dispatch-sync [::events/initialize-db])
   (re-frame/dispatch [::re-graph/init {:ws-url   "ws://localhost:8888/graphql-ws"
                                        :http-url "http://localhost:8888/graphql"}])
