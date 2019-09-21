@@ -4,6 +4,8 @@
             [clojure.string :as str])
   (:import (java.util UUID)))
 
+(def min-time-between-subscriptions 250)
+
 (defn open-account
   [ws-connection id]
   (gqlc/subscribe
@@ -52,9 +54,11 @@
   [id data ws-connection latencies account-first account-second]
   (let [{:keys [success reason]} (:money_transfer data)
         [type sequence-number amount time] (str/split id #"\|")
-        transfer-type (keyword (second (str/split type #"-")))]
-    (swap! latencies conj (- (System/currentTimeMillis) (read-string time)))
+        transfer-type (keyword (second (str/split type #"-")))
+        latency (- (System/currentTimeMillis) (read-string time))]
+    (swap! latencies conj latency)
     (gqlc/unsubscribe ws-connection id)
+    (if (< latency min-time-between-subscriptions) (Thread/sleep (- min-time-between-subscriptions latency)))
     (condp = transfer-type
       :from (if (not success) (throw (Exception. "from transfer failed")))
       :to (if (not success) (throw (Exception. "to transfer failed")))
