@@ -1,22 +1,21 @@
 @startuml
-skinparam defaultFontName Arial
+skinparam defaultFontName Roboto
 skinparam defaultFontSize 20
 
-left to right direction
-
+database balancedb as pgb #LightBlue
+database transactiondb as pgt #LightBlue
 [Kafka] as ka #LightGrey
 [Command handler] as ch #Yellow
 [GraphQL endpoint] as ge #Yellow
 [Frontend server] as fs #LightGreen
-actor client as cl #EFEFF3
-database balancedb as pgb #LightBlue
-database transactiondb as pgt #LightBlue
+actor client as cl #White
 
-fs -> cl : provides frontend code
-cl <--> ge : exchange information\nusing GraphQL
-ka <--> ch : exchange data using avro
-ka <--> ge : exchange data using avro
 pgb <-> ch : keep track which\rmessages have been handled\nkeep the balances
 pgt <-> ge : stores/queries transactions\rstores profiles
+fs -> cl : provides frontend code
+cl <--> ge : exchange information\nusing GraphQL
+ch <-up-> ka : exchange data using avro
+ge <--> ka : exchange data using avro
+
 
 @enduml

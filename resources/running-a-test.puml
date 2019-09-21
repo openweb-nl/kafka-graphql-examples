@@ -1,24 +1,25 @@
 @startuml
+skinparam defaultFontName Roboto
+skinparam defaultFontSize 20
 
-title Running a test
-
-package nl.openweb.test #Yellow {
-    component file.clj as fi
-    component interactions.clj as in
-    component load.clj as lo
-    component process.clj as pr
+package nl.openweb.test #White {
+    component load.clj as lo #Yellow
+    component file.clj as fi #Yellow
+    component interactions.clj as in #Yellow
+    component generator.clj as ge #Yellow
+    component process.clj as pr #Yellow
 }
-[Chrome driver] as cd #Pink
-[Heartbeat] as hb #Yellow
+component "Chrome driver" as cd #Pink
 ["<color:white>Docker</color>"] as do #DarkBlue
 file output
 
-fi <- pr: run every 20 iterations
-in -> fi: time ms
+ge <- lo: adds generator every minute
+pr -right-> do :get cpu and\lmemory of\ncontainers
+ge --> do :does transactions\ldirectly on endpoint\lmax 4 per second
+lo --> fi: provides latencies of\lgenerators
+fi -> pr: run every 20 iterations
+in -right-> fi: time latency
 fi --> output :writes the data
-in <--> cd :logs in and\lmake transactions
-lo --> hb :sets the load
-pr <-- do :get cpu and\lmemory of\ncontainers
-pr <--- hb :get total\lHeartbeats send
+in <-up-> cd :logs in and\lmakes a transaction\levery second
 
 @enduml

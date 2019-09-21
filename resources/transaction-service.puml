@@ -1,21 +1,19 @@
 @startuml
+skinparam defaultFontName Roboto
+skinparam defaultFontSize 20
 
-title Transaction service
-
-package "nl.openweb.graphql-endpoint.transaction-service.clj" as ts #Yellow {
-    component consumer as c
-    database transaction as tr #LightBlue
-}
-actor client as cl
-[Kafka cluster] as kc #Orange
+database transaction as tr #LightBlue
+component consumer as c #Yellow
+actor client as cl #White
+component kafka as kc #LightGrey
 
 component "schema-provider" as sp #Yellow
 
-cl <--> sp :queries using\lserver, can also\lsubscribe
-c <-- kc :consumes\nBalanceChanged
-tr <-- sp :executes function\ngetting transactions\nor a subscription
+tr <- c :insert transactions
+c <- kc :consumes\nBalanceChanged
+sp <-> cl :queries or subscribe\lto transactions
+tr <-- sp :sql query on\lderived state
 c --> sp :send transaction\nfor active subscriptions
-c -> tr :insert transactions
 
 
 @enduml

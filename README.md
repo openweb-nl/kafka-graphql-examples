@@ -11,8 +11,6 @@ Contents
 * [Modules](#modules)
   * [Topology](#topology)
   * [Synchronizer](#synchronizer)
-  * [Heartbeat](#heartbeat)
-  * [Command generator](#command-generator)
   * [Command handler](#command-handler)
   * [Graphql endpoint](#graphql-endpoint)
   * [Frontend](#frontend)
@@ -142,24 +140,6 @@ There are some limitations in the current implementation:
 - It's not possible to use any of the new ways to configure the schema registry, it's always assuming the 'TopicNameStrategy', see [group by topic or other relationships](https://docs.confluent.io/current/schema-registry/serializer-formatter.html#group-by-topic-or-other-relationships).
 - Errors are not handled (e.g. no retry), but the responses from setting the schemas can be read, and the exit status is only 0 when it's gone ok.
 
-### <a id="heartbeat">Heartbeat</a>
-
-Since we want to generate events automatically we need something to determine the pace. That's the use of this module. It also opens an nrepl (at port 17888) to be able to use `reset!` on the `batch-size` or the `wait-time` to change the pace.
-
-![Heartbeat](docs/heartbeat.svg)
-
-This module produces `Heartbeat` events.
-
-### <a id="command-generator">Command generator</a>
-
-The command generator producers both commands to create a new account (`ConfirmAccountCreation`) and commands to make a transaction(`ConfirmMoneyTransfer`). It also consumes the `AccountCreationConfirmed` events to be able to transfer money to existing other accounts, and have the correct token for those transactions. It consumes `Heartbeat` to determine when and which kind of command to create. Only accounts created with `Atype.AUTO` will be used to generate money transfers.
-
-![Command generator](docs/command-generator.svg)
-
-### <a id="command-handler">Command handler</a>
-
-In order to validate the commands the command handler will do queries on postgres to see whether the message was already handled, and to transfer money and open accounts. When a `ConfirmAccountCreation` is received this will this will almost always generate an `AccountCreationConfirmed` containing the generated token and iban. Only when an existing iban is generated an `AccountCreationFailed` is generated. When a `ConfirmMoneyTransfer` is received there are multiple reason it might fail. The token might be wrong, there me be insufficient funds, or the from and to have the same value. This will trigger a `MoneyTransferFailed` event with the reason. When the transfer succeeds the `MoneyTransferConfirmed` will be returned, containing only the uuid of the command. For each changed account a `BalanceChanged` event is returned.
-
 ![Command handler](docs/command-handler.svg)
 
 ### <a id="graphql-endpoint">Graphql endpoint</a>
@@ -213,36 +193,3 @@ There are several scripts to automate things and thus making live easier. They a
 * `restart.sh` is used to stop and start the whole setup, it does not start a test. When it's finished the application should be accessible at port 8181. 
 * `setup-db.sh` is used to setup the database. It takes the name of the Docker container to execute it on as the first argument and the port used as the second. When running a local PostgreSQL you could copy parts of it to crate the tables and indexes.
 * `synchronize.sh` is used as part of the restart to set both the Kafka topics and schema's in the schema registry.
-
-## <a id="variants">Variants</a>
-
-Putting variations of master in different branches, changing also the base-file-name makes it easy to run the same code again.
-Before running a test make sure any old images, that are not the same are deleted, so you not accidentally run the wrong test.
-This can be done by using the `prepare.sh` script, or just the last line `docker-compose -f docker-bank.yml -f docker-prep.yml build` if you already have new artifacts ready.
- 
-There are roughly two different kind of variants, the ones using just one broker with a reduced batch-cycle so it does not time out and can be run on TravisCi.
-These are based on the one-broker branch. And the 'default' variants using three brokers, which are more realistic but for which 2 cpu's is to little to shine. 
-
-### <a id="#three-brokers">Three brokers</a>
-
-In [ch-kotlin](https://github.com/gklijs/open-bank-mark/tree/ch-kotlin) the command handler has been replaced by one written in Kotlin using Spring Boot.
-
-In [ch-rust](https://github.com/gklijs/open-bank-mark/tree/ch-rust) the command handler has been replaced by one written in Rust, using the librdkafka 1.0.0 for most of the heavy lifting.
-It's using Diesel, an orm library. It has a nice way of doing updates as function, making it less likely for inconsistencies to occur. This also causes more load on the database.
- 
-In [ch-rust-native](https://github.com/gklijs/open-bank-mark/tree/ch-rust-native) instead a native rust library is used. Witch makes it possible to create a docker image of just 8 Mb.
-
-### <a id="#one-broker">One broker</a>
-
-In [one-broker-ch-kotlin](https://github.com/gklijs/open-bank-mark/tree/one-broker-ch-kotlin) the command handler has been replaced by one written in Kotlin using Spring Boot.
-
-In [one-broker-ch-rust](https://github.com/gklijs/open-bank-mark/tree/one-broker-ch-rust) the command handler has been replaced by one written in Rust, using the librdkafka 1.0.0 for most of the heavy lifting.
-It's using Diesel, an orm library. It has a nice way of doing updates as function, making it less likely for inconsistencies to occur. This also causes more load on the database.
-
-In [one-broker-ch-rust-native](https://github.com/gklijs/open-bank-mark/tree/one-broker-ch-rust-native) instead a native rust library is used. Witch makes it possible to create a docker image of just 8 Mb.
-
-## <a id="results">Results</a>
-
-The results of comparing 4 different implementations of the Command Handler can be found here [open-bank](https://open-bank.gklijs.tech/).
-Some of the graphs where presented at a Kafka meetup of which the slides are available on [speakerdeck](https://speakerdeck.com/gklijs/adding-some-rust-to-your-kafka).
-The raw data for these can be found in [data-ch-languages-one-broker](https://github.com/gklijs/open-bank-mark/tree/data-ch-languages-one-broker).

@@ -1,8 +1,8 @@
 @startuml
-skinparam defaultFontName Arial
+skinparam defaultFontName Roboto
 skinparam defaultFontSize 20
 
-actor client as cl #EFEFF3
+actor client as cl #White
 entity "GraphQL endpoint" as ge #Yellow
 database transactiondb as pgt #LightBlue
 entity "Kafka" as ka #LightGrey

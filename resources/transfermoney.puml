@@ -1,8 +1,8 @@
 @startuml
-skinparam defaultFontName Arial
+skinparam defaultFontName Roboto
 skinparam defaultFontSize 20
 
-actor client as cl #EFEFF3
+actor client as cl #White
 entity "GraphQL endpoint" as ge #Yellow
 database transactiondb as pgt #LightBlue
 entity "Kafka" as ka #LightGrey
@@ -15,7 +15,6 @@ ge -> ka : Polling records
 ka -> ge : Sends records one being a MoneyTransferConfirmed
 ge -> ge : Filter on uuid
 ge -> cl : Send MoneyTransferResult
-cl -> cl : Display error
 cl -> ge : End subscription money_transfer
 
 @enduml
