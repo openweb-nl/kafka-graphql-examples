@@ -35,7 +35,7 @@
   [ws-connection subscription-id query variables]
   (send-ws ws-connection {:id      subscription-id
                           :type    "start"
-                          :payload {:query     query
+                          :payload {:query     (str "subscription " query)
                                     :variables variables}}))
 
 (defn unsubscribe [ws-connection id] (send-ws ws-connection {:id id :type "stop"}))
