@@ -50,6 +50,29 @@
     (with-open [conn (j/get-connection @datasource)]
       (j/execute-one! conn ["SELECT * FROM balance WHERE iban = ?" iban]))))
 
+(defn transfer-from!
+  [iban token amount]
+  (if
+    (vg/valid-open-iban iban)
+    (with-open [conn (j/get-connection @datasource)]
+      (j/execute-one! conn ["
+      UPDATE balance
+      SET amount =
+        CASE WHEN balance.token != ? THEN balance.amount
+        WHEN balance.amount - ? >= balance.lmt THEN balance.amount - ?
+        ELSE balance.amount END FROM balance AS old_balance
+      WHERE balance.iban = ? AND balance.balance_id = old_balance.balance_id
+      RETURNING balance.*, old_balance.amount as old_amount"
+                            token amount amount iban]))))
+
+(defn transfer-to!
+  [iban amount]
+  (if
+    (vg/valid-open-iban iban)
+    (with-open [conn (j/get-connection @datasource)]
+      (j/execute-one! conn ["UPDATE balance SET amount = balance.amount + ? WHERE balance.iban = ? RETURNING balance.*"
+                            amount iban]))))
+
 (defn insert-balance!
   [mp]
   (let [cmp (-> mp
@@ -57,11 +80,6 @@
                 (dissoc :reason))]
     (with-open [conn (j/get-connection @datasource)]
       (sql/insert! conn :balance cmp))))
-
-(defn update-balance!
-  [mp]
-  (with-open [conn (j/get-connection @datasource)]
-    (sql/update! conn :balance mp ["balance_id = ?" (:balance/balance_id mp)])))
 
 (defn find-cac-by-uuid
   [uuid]
@@ -100,22 +118,15 @@
 
 (defn transfer-update!
   [uuid ^ConfirmMoneyTransfer tm]
-  (if-let [from-map (find-balance-by-iban (.getFrom tm))]
+  (if-let [from-map (transfer-from! (.getFrom tm) (.getToken tm) (.getAmount tm))]
     (cond
       (not (= (:balance/token from-map) (.getToken tm))) {:uuid uuid :reason "invalid token"}
-      (< (- (:balance/amount from-map) (.getAmount tm)) (:balance/lmt from-map)) {:uuid uuid :reason "insufficient funds"}
-      :else (let [new-from-map (update from-map :balance/amount #(- % (.getAmount tm)))
-                  to-map (find-balance-by-iban (.getTo tm))
-                  new-to-map (if to-map (update to-map :balance/amount #(+ % (.getAmount tm))))]
-              (update-balance! new-from-map)
-              (if new-to-map (update-balance! new-to-map))
-              (if new-to-map
-                {:from new-from-map :to new-to-map}
-                {:from new-from-map})))
-    (if-let [to-map (find-balance-by-iban (.getTo tm))]
-      (let [new-to-map (update to-map :balance/amount #(+ % (.getAmount tm)))]
-        (update-balance! new-to-map)
-        {:to new-to-map})
+      (= (:balance/amount from-map) (:balance/old_amount from-map)) {:uuid uuid :reason "insufficient funds"}
+      :else (if-let [to-map (transfer-to! (.getTo tm) (.getAmount tm))]
+              {:from from-map :to to-map}
+              {:from from-map}))
+    (if-let [to-map (transfer-to! (.getTo tm) (.getAmount tm))]
+      {:to to-map}
       {:uuid uuid :reason "both to and from not known at this bank"})))
 
 (defn invalid-from
