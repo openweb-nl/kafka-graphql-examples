@@ -102,16 +102,15 @@
     (sql/insert! conn :cmt mp)))
 
 (defn get-account
-  [uuid type]
+  [uuid]
   (if-let [result (find-cac-by-uuid uuid)]
     {:uuid   (:cac/uuid result)
      :iban   (:cac/iban result)
      :token  (:cac/token result)
-     :type   (:cac/type result)
      :reason (:cac/reason result)}
     (let [iban (vg/new-iban)
           reason (if (find-balance-by-iban iban) "generated iban already exists, try again")
-          mp {:uuid uuid :iban iban :token (vg/new-token) :type type :reason reason}]
+          mp {:uuid uuid :iban iban :token (vg/new-token) :reason reason}]
       (insert-cac! mp)
       (if (nil? (:reason mp)) (insert-balance! mp))
       mp)))

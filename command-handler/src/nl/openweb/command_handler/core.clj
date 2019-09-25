@@ -14,12 +14,10 @@
 
 (defn handle-cac
   [producer key ^ConfirmAccountCreation value]
-  (let [result (db/get-account (-> (.getId value)
-                                   .bytes
-                                   vg/bytes->uuid) (.toString (.getAType value)))
+  (let [result (db/get-account (-> (.getId value) .bytes vg/bytes->uuid))
         feedback (if (:reason result)
                    (AccountCreationFailed. (.getId value) (:reason result))
-                   (AccountCreationConfirmed. (.getId value) (:iban result) (:token result) (.getAType value)))]
+                   (AccountCreationConfirmed. (.getId value) (:iban result) (:token result)))]
     (clients/produce producer acf-topic key feedback)))
 
 (defn ->bc

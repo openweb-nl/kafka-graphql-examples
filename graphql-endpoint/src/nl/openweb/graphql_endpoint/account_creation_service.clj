@@ -6,7 +6,7 @@
             [next.jdbc :as j]
             [next.jdbc.sql :as sql])
   (:import (org.apache.kafka.clients.consumer ConsumerRecord)
-           (nl.openweb.data AccountCreationConfirmed AccountCreationFailed ConfirmAccountCreation Uuid Atype)
+           (nl.openweb.data AccountCreationConfirmed AccountCreationFailed ConfirmAccountCreation Uuid)
            (java.util UUID)))
 
 (def command-topic (or (System/getenv "KAFKA_COMMAND_TOPIC") "commands"))
@@ -71,14 +71,14 @@
     (if (crypto/check password (:account/password account))
       (do
         (add-sub (:subscriptions db) (:account/uuid account) source-stream)
-        (clients/produce (get-in db [:kafka-producer :producer]) command-topic username (ConfirmAccountCreation. (Uuid. (uuid->bytes (:account/uuid account))) Atype/MANUAL)))
+        (clients/produce (get-in db [:kafka-producer :producer]) command-topic username (ConfirmAccountCreation. (Uuid. (uuid->bytes (:account/uuid account))))))
       (source-stream {:iban   nil
                       :token  nil
                       :reason "incorrect password"}))
     (let [uuid (UUID/randomUUID)
           sub-id (add-sub (:subscriptions db) uuid source-stream)]
       (insert-account! (get-in db [:db :datasource]) username password uuid)
-      (clients/produce (get-in db [:kafka-producer :producer]) command-topic username (ConfirmAccountCreation. (Uuid. (uuid->bytes uuid)) Atype/MANUAL))
+      (clients/produce (get-in db [:kafka-producer :producer]) command-topic username (ConfirmAccountCreation. (Uuid. (uuid->bytes uuid))))
       sub-id)))
 
 (defrecord AccountCreationService []

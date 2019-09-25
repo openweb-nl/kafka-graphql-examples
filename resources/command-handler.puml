@@ -1,25 +1,25 @@
 @startuml
-skinparam defaultFontName Montserrat
+skinparam defaultFontName Roboto
 skinparam defaultFontSize 20
 
 package "nl.openweb.command-handler.core.clj" #White{
-    component consumer as c #Yellow
-    component producer as p #Yellow
     component "cmt-handler" as mth #Yellow
     component "cac-handler" as ach #Yellow
+    component consumer as c #Yellow
+    component producer as p #Yellow
 }
-package balancedb #LightBlue{
-    database balance #EFEFF3
-    database cac #EFEFF3
-    database cmt #EFEFF3
+package balancedb #White{
+    database balance #LightBlue
+    database cac #LightBlue
+    database cmt #LightBlue
 }
 component Kafka as kc #F26724
 
-mth --> cmt :check/update status
-ach --> cac :check/update status
-mth --> balance :check/update balance
-ach --> balance :crates balance
-kc <--- p :AccountCreationConfirmed,\nAccountCreationFailed,\nMoneyTransferConfirmed,\nMoneyTransferFailed and\nBalanceChanged
-c <--- kc :ConfirmAccountCreation\n and ConfirmMoneyTransfer
+mth --> cmt :check/update\nstatus
+ach --> cac :check/update\nstatus
+mth --> balance :check/update\nbalance
+ach --> balance :creates\nbalance
+p --> kc :AccountCreationConfirmed,\nAccountCreationFailed,\nMoneyTransferConfirmed,\nMoneyTransferFailed and\nBalanceChanged\n(three different topics)
+c <-- kc :ConfirmAccountCreation\n and ConfirmMoneyTransfer
 
 @enduml

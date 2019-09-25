@@ -24,7 +24,6 @@ create table balance(
     iban text not null,
     token text not null,
     amount bigint not null default 0,
-    type text not null,
     lmt bigint not null default -50000,
     created_at timestamp not null default current_timestamp,
     updated_at timestamp not null default current_timestamp);
@@ -33,8 +32,8 @@ create trigger balance_updated_at before update
 on balance for each row execute procedure
 maintain_updated_at();
 
-insert into balance (balance_id, iban, token, amount, type, lmt) values
-    (0, 'NL66OPEN0000000000', '00000000000000000000', 100000000000000000, 'AUTO', -50000);
+insert into balance (balance_id, iban, token, amount, lmt) values
+    (0, 'NL66OPEN0000000000', '00000000000000000000', 100000000000000000, -50000);
 
 alter table balance alter column balance_id restart with 1;
 
@@ -44,7 +43,6 @@ create table cac(
     uuid UUID not null primary key,
     iban text,
     token text,
-    type text,
     reason text,
     created_at timestamp not null default current_timestamp);
 
