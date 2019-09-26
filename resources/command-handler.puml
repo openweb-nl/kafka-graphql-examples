@@ -19,7 +19,7 @@ mth --> cmt :check/update\nstatus
 ach --> cac :check/update\nstatus
 mth --> balance :check/update\nbalance
 ach --> balance :creates\nbalance
-p --> kc :AccountCreationConfirmed,\nAccountCreationFailed,\nMoneyTransferConfirmed,\nMoneyTransferFailed and\nBalanceChanged\n(three different topics)
+p --> kc :AccountCreationConfirmed,\nAccountCreationFailed,\nMoneyTransferConfirmed,\nMoneyTransferFailed and\nBalanceChanged\n(3 different topics)
 c <-- kc :ConfirmAccountCreation\n and ConfirmMoneyTransfer
 
 @enduml

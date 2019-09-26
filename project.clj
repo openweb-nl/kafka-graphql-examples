@@ -12,9 +12,9 @@
                                        :year 2019}}
             :versions {ch.qos.logback/logback-classic                 "1.3.0-alpha4"
                        com.damballa/abracad                           "0.4.14-alpha2"
-                       com.fasterxml.jackson.core/jackson-annotations "2.10.0.pr2"
-                       com.fasterxml.jackson.core/jackson-core        "2.10.0.pr2"
-                       com.fasterxml.jackson.core/jackson-databind    "2.10.0.pr2"
+                       com.fasterxml.jackson.core/jackson-annotations "2.10.0.pr3"
+                       com.fasterxml.jackson.core/jackson-core        "2.10.0.pr3"
+                       com.fasterxml.jackson.core/jackson-databind    "2.10.0.pr3"
                        hikari-cp/hikari-cp                            "2.9.0"
                        io.confluent/kafka-avro-serializer             "5.3.0"
                        org.apache.avro/avro                           "1.8.2"
