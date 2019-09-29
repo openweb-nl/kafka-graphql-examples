@@ -1,6 +1,7 @@
 @startuml
+skinparam shadowing false
 skinparam defaultFontName Roboto
-skinparam defaultFontSize 20
+skinparam defaultFontSize 26
 
 package "nl.openweb.command-handler.core.clj" #White{
     component "cmt-handler" as mth #Yellow

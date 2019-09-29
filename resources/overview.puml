@@ -1,6 +1,7 @@
 @startuml
+skinparam shadowing false
 skinparam defaultFontName Roboto
-skinparam defaultFontSize 20
+skinparam defaultFontSize 26
 
 database balancedb as pgb #LightBlue
 database transactiondb as pgt #LightBlue

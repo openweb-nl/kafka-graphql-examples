@@ -1,21 +1,22 @@
 @startuml
+skinparam shadowing false
 skinparam defaultFontName Roboto
-skinparam defaultFontSize 20
+skinparam defaultFontSize 26
 
 actor client as cl #White
 entity "GraphQL endpoint" as ge #Yellow
 database transactiondb as pgt #LightBlue
-entity "Kafka" as ka #LightGrey
+boundary "Kafka" as ka #LightGrey
 
 cl -> ge : Subscribe to get_account stream
 ge -> pgt : Create account with uuid
-ge -> ka : Create a ConfirmAccountCreation
-ka -> ka : Process
-ge -> ka : Polling records
-ka -> ge : Sends records one being an AccountCreationConfirmed
+ge -> ka : Send an account creation command
+activate ge
+ka -> ge : Sends records about account creation
 ge -> ge : Filter on uuid
-ge -> cl : Send AccountResult
-cl -> cl : Store iban and token
-cl -> ge : End subscription get_account
+ge -> cl : Send account creation result
+cl -> cl : Store bank account and token
+cl -> ge : End subscription with id
+deactivate ge
 
 @enduml

@@ -1,20 +1,21 @@
 @startuml
+skinparam shadowing false
 skinparam defaultFontName Roboto
-skinparam defaultFontSize 20
+skinparam defaultFontSize 26
+hide footbox
 
 actor client as cl #White
 entity "GraphQL endpoint" as ge #Yellow
-database transactiondb as pgt #LightBlue
-entity "Kafka" as ka #LightGrey
+boundary "Kafka" as ka #LightGrey
 
 cl -> cl : Fill in amount, to, and description
 cl -> ge : Subscribe to money_transfer stream
-ge -> ka : Create a ConfirmMoneyTransfer
-ka -> ka : Process
-ge -> ka : Polling records
-ka -> ge : Sends records one being a MoneyTransferConfirmed
+ge -> ka : Send a transfer money command
+activate ge
+ka -> ge : Sends records about money transfers
 ge -> ge : Filter on uuid
-ge -> cl : Send MoneyTransferResult
-cl -> ge : End subscription money_transfer
+ge -> cl : Send money transfer result
+cl -> ge : End subscription with id
+deactivate ge
 
 @enduml

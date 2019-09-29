@@ -1,11 +1,12 @@
 @startuml
+skinparam shadowing false
 skinparam defaultFontName Roboto
-skinparam defaultFontSize 20
+skinparam defaultFontSize 26
 
 component producer as p #Yellow
 component consumer as c #Yellow
 component kafka as kc #LightGrey
-actor client as cl
+actor client as cl #White
 component "schema-provider" as sp #Yellow
 
 sp <-right-> cl :request transfer\lusing server

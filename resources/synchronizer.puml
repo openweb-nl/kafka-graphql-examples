@@ -1,6 +1,7 @@
 @startuml
-
-title Synchronizer
+skinparam shadowing false
+skinparam defaultFontName Roboto
+skinparam defaultFontSize 26
 
 package nl.openweb.synchronizer #Yellow {
     component admin.clj as admin

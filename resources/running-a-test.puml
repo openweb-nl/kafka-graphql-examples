@@ -1,6 +1,7 @@
 @startuml
+skinparam shadowing false
 skinparam defaultFontName Roboto
-skinparam defaultFontSize 20
+skinparam defaultFontSize 26
 
 package nl.openweb.test #White {
     component load.clj as lo #Yellow

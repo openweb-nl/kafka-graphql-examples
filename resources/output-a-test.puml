@@ -1,6 +1,7 @@
 @startuml
-
-title Output a test
+skinparam shadowing false
+skinparam defaultFontName Roboto
+skinparam defaultFontSize 26
 
 package nl.openweb.test #Yellow {
     component file.clj as fi

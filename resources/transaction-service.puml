@@ -1,6 +1,7 @@
 @startuml
+skinparam shadowing false
 skinparam defaultFontName Roboto
-skinparam defaultFontSize 20
+skinparam defaultFontSize 26
 
 database transaction as tr #LightBlue
 component consumer as c #Yellow

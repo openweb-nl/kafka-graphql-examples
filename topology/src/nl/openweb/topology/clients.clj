@@ -43,7 +43,7 @@
       (.put ProducerConfig/CLIENT_ID_CONFIG client-id)
       (.put ProducerConfig/KEY_SERIALIZER_CLASS_CONFIG (.getName StringSerializer))
       (.put ProducerConfig/VALUE_SERIALIZER_CLASS_CONFIG (.getName KafkaAvroSerializer))
-      (.put ProducerConfig/LINGER_MS_CONFIG (.intValue 100))
+      (.put ProducerConfig/LINGER_MS_CONFIG (.intValue 25))
       (.put ProducerConfig/ACKS_CONFIG "all")
       (.put AbstractKafkaAvroSerDeConfig/SCHEMA_REGISTRY_URL_CONFIG schema-url)
       (.put AbstractKafkaAvroSerDeConfig/AUTO_REGISTER_SCHEMAS false)

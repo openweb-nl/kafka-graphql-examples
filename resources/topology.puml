@@ -1,6 +1,7 @@
 @startuml
-
-title Topology
+skinparam shadowing false
+skinparam defaultFontName Roboto
+skinparam defaultFontSize 26
 
 package resources{
     file logback.xml as lb
