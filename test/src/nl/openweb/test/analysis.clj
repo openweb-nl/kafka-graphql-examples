@@ -1,5 +1,6 @@
 (ns nl.openweb.test.analysis
-  (:require [kixi.stats.core :as kixi]
+  (:require [clojure.data.json :as json]
+            [kixi.stats.core :as kixi]
             [kixi.stats.distribution :refer [quantile]]
             [oz.core :as oz]))
 
@@ -90,10 +91,12 @@
   (reduce-kv (fn [i category data-rows] (into i (data-rows->vega category data-rows))) [] data))
 
 (defn line-plot
-  ([vega-items category-name y-value y-title]
-   {:width  500,
+  ([data-url category-name y-value y-title]
+   {:width  800,
     :height 500,
-    :data   {:values vega-items}
+    :config {:legend {:titleFont "Roboto" :labelFont "Roboto"}
+             :axis   {:titleFont "Roboto" :labelFont "Roboto"}}
+    :data   {:url data-url}
     :layer  [{:encoding {:x     {:field "generators"
                                  :type  "quantitative"
                                  :title "Amount of generators"}
@@ -123,11 +126,11 @@
             })))
 
 (defn to-html
-  [vega-items category-name y-value y-title]
+  [data-url category-name y-value y-title]
   (let [y-err (clojure.string/replace y-value #"average" "err")
         lp (if (= y-err y-value)
-             (line-plot vega-items category-name y-value y-title)
-             (line-plot vega-items category-name y-value y-title y-err))]
+             (line-plot data-url category-name y-value y-title)
+             (line-plot data-url category-name y-value y-title y-err))]
     (oz/export! lp (str "frontend/public/" y-value ".html"))))
 
 (def outputs {"average-latency"           "Average latency (ms)"
@@ -151,6 +154,8 @@
               "data-points"               "Amount of measurements (count)"})
 
 (defn process
-  [category-name data]
-  (let [vega-items (raw->vega data)]
-    (doseq [[k v] outputs] (to-html vega-items category-name k v))))
+  [category-name data base-url]
+  (let [data-url (str base-url "/data.json")
+        vega-items (raw->vega data)]
+    (spit "frontend/public/data.json" (json/write-str vega-items))
+    (doseq [[k v] outputs] (to-html data-url category-name k v))))

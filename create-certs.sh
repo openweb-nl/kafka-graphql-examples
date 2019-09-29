@@ -1,7 +1,5 @@
 #!/bin/bash
 
-mkdir secrets && cd secrets
-
 set -o nounset \
   -o errexit \
   -o verbose \
@@ -60,4 +58,4 @@ for i in kafka-1 kafka-2 kafka-3 command-handler graphql-endpoint; do
   fi
 done
 
-docker rm dummy && cd .. && rm -rf secrets
+docker rm dummy

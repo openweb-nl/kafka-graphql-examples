@@ -5,6 +5,6 @@ git submodule update --init &&
   ./build-and-copy-frontend.sh &&
   cd ../topology && lein install && cd .. &&
   lein modules uberjar &&
-  ./create-certs.sh &&
+  mkdir secrets && cd secrets && ../create-certs.sh && cd .. && rm -rf secrets &&
   java -jar test/target/test.jar mapping &&
   docker-compose -f docker-bank.yml -f docker-prep.yml build

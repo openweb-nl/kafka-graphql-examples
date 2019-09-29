@@ -11,12 +11,10 @@ database transactiondb as pgt #LightBlue
 [Frontend server] as fs #LightGreen
 actor client as cl #White
 
-pgb <-> ch : keep track which\rmessages have been handled\nkeep the balances
-pgt <-> ge : stores/queries transactions\rstores profiles
-fs -> cl : provides frontend code
-cl <--> ge : exchange information\nusing GraphQL
-ch <-up-> ka : exchange data using avro
-ge <--> ka : exchange data using avro
-
-
+cl <- fs
+cl <---> ge
+ch <-up-> ka
+ge <--> ka
+ch <-right-> pgb : executes commands
+ge <-right-> pgt : derived state
 @enduml

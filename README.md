@@ -16,10 +16,6 @@ Contents
   * [Frontend](#frontend)
   * [Test](#test)
 * [Scripts](#scripts)
-* [Variants](#variants)
-  * [Three brokers](#three-brokers)
-  * [One broker](#one-broker)
-* [Results](#results)
 
 ## <a id="intro">Intro</a>
 

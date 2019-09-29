@@ -9,10 +9,10 @@ component kafka as kc #LightGrey
 actor client as cl #White
 component "schema-provider" as sp #Yellow
 
-sp <-right-> cl :request transfer\lusing server
+cl <-right-> sp :request transfer\lusing server
 sp --> p :executes function\nresulting in a\n transfer and\ncreates subscription\nfor the result
-c -right-> sp :send MoneyTransferResult\nfor active subscriptions
 p --> kc :produces\lConfirmMoneyTransfer
 c <-- kc :consumes\lMoneyTransferConfirmed\nand\nMoneyTransferFailed
+sp <-- c :send MoneyTransferResult\nfor active subscriptions
 
 @enduml

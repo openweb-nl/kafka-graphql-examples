@@ -11,6 +11,7 @@
                  [org.apache.httpcomponents/httpasyncclient "4.1.4"]
                  [org.apache.httpcomponents/httpclient-cache "4.5.10"]
                  [org.clojure/clojure :version]
+                 [org.clojure/data.json :version]
                  [org.clojure/tools.logging :version]
                  [stylefruits/gniazdo "1.1.2"]]
   :main nl.openweb.test.core

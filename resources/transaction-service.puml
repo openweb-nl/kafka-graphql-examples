@@ -3,17 +3,16 @@ skinparam shadowing false
 skinparam defaultFontName Roboto
 skinparam defaultFontSize 26
 
+actor client as cl #White
 database transaction as tr #LightBlue
 component consumer as c #Yellow
-actor client as cl #White
 component kafka as kc #LightGrey
-
 component "schema-provider" as sp #Yellow
 
-tr <- c :insert transactions
-c <- kc :consumes\nBalanceChanged
-sp <-> cl :queries or subscribe\lto transactions
-tr <-- sp :sql query on\lderived state
+cl <-> sp :queries or subscribe\lto transactions
+sp -> tr :sql query on\lderived state
+tr <-- c :insert transactions
+c <-- kc :consumes\nBalanceChanged
 c --> sp :send transaction\nfor active subscriptions
 
 

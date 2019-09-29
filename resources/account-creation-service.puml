@@ -3,17 +3,17 @@ skinparam shadowing false
 skinparam defaultFontName Roboto
 skinparam defaultFontSize 26
 
+actor client as cl #White
 component producer as p #Yellow
 component consumer as c #Yellow
 database account as ac #LightBlue
-actor client as cl #White
 component "schema-provider" as sp #Yellow
 component "kafka" as kc #LightGrey
 
 ac --> p :make request using uuid
 c <-- kc :consumes\lAccountCreationConfirmed\nand\nAccountCreationFailed
-cl <-left-> sp :request account\lusing server\nneeds token and iban
-ac <- sp :if the username\lalready exists\nchecks the password\notherwise insert\nwith new uuid
+cl <-right-> sp :request account\lusing server\nneeds token and iban
+sp -> ac :if the username\lalready exists\nchecks the password\notherwise insert\nwith new uuid
 p --> kc :produces\lConfirmAccountCreation
 sp <-- c :send AccountResult\nfor active subscriptions
 

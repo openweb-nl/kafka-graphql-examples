@@ -162,7 +162,7 @@
     [:li [:a {:href "min-generator-latency.html" :target "_blank"} "Min latency generator"]]
     [:li [:a {:href "99-generator-latency.html" :target "_blank"} "99 percentile latency generator"]]
     [:li [:a {:href "transactions.html" :target "_blank"} "Total amount of transactions"]]
-    [:li [:a {:href "transactions.html" :target "_blank"} "Transactions per second"]]
+    [:li [:a {:href "transactions-per-second.html" :target "_blank"} "Transactions per second"]]
     [:li [:a {:href "average-db-cpu.html" :target "_blank"} "Avg db cpu"]]
     [:li [:a {:href "average-db-mem.html" :target "_blank"} "Avg db memory"]]
     [:li [:a {:href "average-ch-cpu.html" :target "_blank"} "Avg ch cpu"]]

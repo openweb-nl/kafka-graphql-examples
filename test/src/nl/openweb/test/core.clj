@@ -80,7 +80,7 @@
   [file-name]
   (let [config (file/get-data file-name)
         data (reduce-kv (fn [i k v] (assoc i k (file/get-data v))) {} (:mapping config))]
-    (analysis/process (:category-name config) data)))
+    (analysis/process (:category-name config) data (:base-url config))))
 
 (defn -main
   [& [file-name]]
