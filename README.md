@@ -166,7 +166,7 @@ Nginx now just serves static files, but could be used to proxy traffic to the gr
 
 This module contains the code both to run tests and to generate multiple html files from one or multiple run tests.
 Each run tests will write a .edn file in the resources folder. The name is a combination of the `base-file-name` in [file.clj](test/src/nl/openweb/test/file.clj) and the year, month, day, hour and minute the test is started.
-A mapping can be edited in the [mapping.edn](resources/mapping.edn) file. You can combine several files if they start the same by adding a '\*', for example 'clojure-\*' will combine all the test run files starting with 'clojure-'.
+A mapping can be edited in the [mapping.edn](resources/linger-ms-config.edn) file. You can combine several files if they start the same by adding a '\*', for example 'clojure-\*' will combine all the test run files starting with 'clojure-'.
 A test will start by making some connections and waiting till the user is logged in. When this happens the client will have received and Iban and the matching token in order to transfer money.
 It will run depending on some settings in [core.clj](test/src/nl/openweb/test/core.clj). It will run till `max-time-outs` occur, where a time-out is when the response takes longer then `max-interaction-time` ms. The `batch-cycle` determines after how many cycles the load is increases.
 The `loops-for-success` determines the exit code, and with it a successful run for travis.
@@ -189,3 +189,4 @@ There are several scripts to automate things and thus making live easier. They a
 * `restart.sh` is used to stop and start the whole setup, it does not start a test. When it's finished the application should be accessible at port 8181. 
 * `setup-db.sh` is used to setup the database. It takes the name of the Docker container to execute it on as the first argument and the port used as the second. When running a local PostgreSQL you could copy parts of it to crate the tables and indexes.
 * `synchronize.sh` is used as part of the restart to set both the Kafka topics and schema's in the schema registry.
+* `create-data-json.sh` needs a name argument, matching a .edn file in resources with a mapping. It will process the data so it can be used by vega in the frontend.

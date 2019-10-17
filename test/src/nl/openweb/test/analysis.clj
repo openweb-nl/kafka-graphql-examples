@@ -1,8 +1,7 @@
 (ns nl.openweb.test.analysis
   (:require [clojure.data.json :as json]
             [kixi.stats.core :as kixi]
-            [kixi.stats.distribution :refer [quantile]]
-            [oz.core :as oz]))
+            [kixi.stats.distribution :refer [quantile]]))
 
 (defn valid
   [row nth-in-row]
@@ -125,37 +124,8 @@
             :mark     {:type "errorbar"}
             })))
 
-(defn to-html
-  [data-url category-name y-value y-title]
-  (let [y-err (clojure.string/replace y-value #"average" "err")
-        lp (if (= y-err y-value)
-             (line-plot data-url category-name y-value y-title)
-             (line-plot data-url category-name y-value y-title y-err))]
-    (oz/export! lp (str "frontend/public/" y-value ".html"))))
-
-(def outputs {"average-latency"           "Average latency (ms)"
-              "max-latency"               "Max latency (ms)"
-              "min-latency"               "Min latency (ms)"
-              "99-latency"                ".99 percentile latency (ms)"
-              "average-generator-latency" "Average generator latency (ms)"
-              "max-generator-latency"     "Max generator latency (ms)"
-              "min-generator-latency"     "Min generator latency (ms)"
-              "99-generator-latency"      ".99 percentile generator latency (ms)"
-              "transactions"              "Total amount of transactions (count)"
-              "transactions-per-second"   "Transactions per second (count/second)"
-              "average-db-cpu"            "Average cpu database (% from total)"
-              "average-db-mem"            "Average mem database (MiB)"
-              "average-ch-cpu"            "Average cpu command-handler (% from total)"
-              "average-ch-mem"            "Average mem command-handler (MiB)"
-              "average-kb-cpu"            "Average cpu kafka broker (% from total)"
-              "average-kb-mem"            "Average mem kafka broker (MiB)"
-              "average-ge-cpu"            "Average cpu graphql endpoint (% from total)"
-              "average-ge-mem"            "Average mem graphql endpoint (MiB)"
-              "data-points"               "Amount of measurements (count)"})
-
 (defn process
-  [category-name data base-url]
-  (let [data-url (str base-url "/data.json")
+  [category data]
+  (let [path (str "frontend/resources/public/data/" category ".json")
         vega-items (raw->vega data)]
-    (spit "frontend/public/data.json" (json/write-str vega-items))
-    (doseq [[k v] outputs] (to-html data-url category-name k v))))
+    (spit path (json/write-str vega-items))))

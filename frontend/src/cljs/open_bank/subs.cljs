@@ -9,7 +9,7 @@
 (re-frame/reg-sub
   ::nav
   (fn [db]
-    [(:selected-nav db) (:mob-expand db) (:show-left db)]))
+    [(:selected-nav db) (:mob-expand db) (:show-left db) (:results db)]))
 
 (re-frame/reg-sub
   ::selected-nav
@@ -23,7 +23,7 @@
       :home [(:selected-nav db) (:company-iban db)]
       :bank-employee [(:selected-nav db) [(:all-accounts db) (:employee-iban db)]]
       :client [(:selected-nav db) (:login-status db)]
-      :background [(:selected-nav db) nil]
+      :results [(:selected-nav db) (:results db)]
       [:non "error, should not be possible"])))
 
 (re-frame/reg-sub
@@ -33,7 +33,7 @@
       :home [(:selected-nav db) (:transactions db)]
       :bank-employee [(:selected-nav db) [(:employee-iban db) (:transactions db)]]
       :client [(:selected-nav db) [(:login-status db) (:transfer-data db) (:transactions db)]]
-      :background [(:selected-nav db) nil]
+      :results [(:selected-nav db) (:results db)]
       [:non "error, should not be possible"])))
 
 (re-frame/reg-sub

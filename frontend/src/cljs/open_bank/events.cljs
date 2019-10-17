@@ -45,6 +45,16 @@
     (update db :show-left not)))
 
 (re-frame/reg-event-db
+  ::set-category
+  (fn [db [_ category]]
+    (assoc-in db [:results :category] category)))
+
+(re-frame/reg-event-db
+  ::set-x-value
+  (fn [db [_ x-value]]
+    (assoc-in db [:results :x-value] x-value)))
+
+(re-frame/reg-event-db
   ::set-subscription-id
   (fn [db [_ subscription-id]]
     (-> db

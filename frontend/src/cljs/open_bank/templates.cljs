@@ -1,19 +1,23 @@
 (ns open-bank.templates
   (:require [clojure.string :as string]
             [open-bank.events :as events]
+            [open-bank.results :as results]
             [open-bank.routes :as routes]
             [re-frame.core :as re-frame]
             [re-graph.core :as re-graph]))
 
 (defn navbar-item
-  [nav selected-nav]
+  [nav selected-nav results]
   [:a.navbar-item
    {:class (if (= selected-nav nav) "is-active")
-    :href  (routes/url-for nav)
+    :href  (if
+             (= nav :results)
+             (routes/url-for nav :category (name (:category results)) :x-value (name (:x-value results)))
+             (routes/url-for nav))
     :key   nav} (string/capitalize (name nav))])
 
 (defn nav-bar
-  [selected-nav expand show-left]
+  [selected-nav expand show-left results]
   [:nav#nav-bar.navbar.is-fixed-top {:role "navigation" :aria-label "main navigation"}
    [:div.navbar-brand
     [:a.navbar-item
@@ -46,7 +50,7 @@
    [:div#main-menu.navbar-menu
     {:class (if expand "is-active")}
     [:div#flex-main-menu.navbar-start
-     (map #(navbar-item % selected-nav) [:bank-employee :client :background])]
+     (map #(navbar-item % selected-nav results) [:bank-employee :client :results])]
     [:div.navbar-end
      [:a.navbar-item.is-hidden-touch
       {:target "_blank", :href "https://www.openweb.nl"}
@@ -146,32 +150,8 @@
    [:p "This is a small demo project for showing some of the possibilities when exposing kafka topics as GraphQL endpoint."]
    [:p "All the components, beside the kafka cluster, and schema registry, are written in clojure."]
    [:p (str "At the right you see some of the transactions of account " company-iban " further on the right are filtering options.")]
-   [:p "From the navigation you can go to Bank-employee to see the other accounts, Client to open your own account, or background to view some documentation"]])
+   [:p "From the navigation you can go to Bank-employee to see the other accounts, Client to open your own account, or Results to view some test results"]])
 
-(defn background-menu
-  []
-  [:div.content
-   [:h2 "Data views"]
-   [:ul
-    [:li [:a {:href "average-latency.html" :target "_blank"} "Avg latency"]]
-    [:li [:a {:href "max-latency.html" :target "_blank"} "Max latency"]]
-    [:li [:a {:href "min-latency.html" :target "_blank"} "Min latency"]]
-    [:li [:a {:href "99-latency.html" :target "_blank"} "99 percentile latency"]]
-    [:li [:a {:href "average-generator-latency.html" :target "_blank"} "Avg latency generator"]]
-    [:li [:a {:href "max-generator-latency.html" :target "_blank"} "Max latency generator"]]
-    [:li [:a {:href "min-generator-latency.html" :target "_blank"} "Min latency generator"]]
-    [:li [:a {:href "99-generator-latency.html" :target "_blank"} "99 percentile latency generator"]]
-    [:li [:a {:href "transactions.html" :target "_blank"} "Total amount of transactions"]]
-    [:li [:a {:href "transactions-per-second.html" :target "_blank"} "Transactions per second"]]
-    [:li [:a {:href "average-db-cpu.html" :target "_blank"} "Avg db cpu"]]
-    [:li [:a {:href "average-db-mem.html" :target "_blank"} "Avg db memory"]]
-    [:li [:a {:href "average-ch-cpu.html" :target "_blank"} "Avg ch cpu"]]
-    [:li [:a {:href "average-ch-mem.html" :target "_blank"} "Avg ch memory"]]
-    [:li [:a {:href "average-kb-cpu.html" :target "_blank"} "Avg kb cpu"]]
-    [:li [:a {:href "average-kb-mem.html" :target "_blank"} "Avg kb memory"]]
-    [:li [:a {:href "average-ge-cpu.html" :target "_blank"} "Avg ge cpu"]]
-    [:li [:a {:href "average-ge-mem.html" :target "_blank"} "Avg ge memory"]]
-    [:li [:a {:href "data-points.html" :target "_blank"} "Data points"]]]])
 
 
 (defn left-content
@@ -180,7 +160,7 @@
     :home (intro data)
     :bank-employee (apply employee-buttons data)
     :client (client-notification data)
-    :background (background-menu)
+    :results (results/selection data)
     [:div data]))
 
 (defn transaction-box
@@ -309,32 +289,13 @@
      [:p "After login transactions will show here."]
      [:p "Both username and password need to have a minimal of 8 characters. Once a username is taken, you need the set password for access"]]))
 
-(defn background-contents
-  []
-  [:div.content
-   [:h2#intro "Intro"]
-   [:p "This project is mainly about Kafka and event sourcing. If you don't really know what Kafka is, then it's a good idea to read "
-    [:a {:href
-         "https://hackernoon.com/thorough-introduction-to-apache-kafka-6fbf2989bbc1"}
-     "an introduction to Kafka"]
-    ". For this project we kind of simulate a bank. The article which served as inspiration for this workshop is "
-    [:a {:href
-         "https://www.confluent.io/blog/real-time-financial-alerts-rabobank-apache-kafkas-streams-api/"}
-     "real-time alerts"]
-    ". In general confluent has great documentation and blogs."]
-   [:p "The whole application can be setup easily with " [:a {:href "https://docs.docker.com/get-started/"} "Docker"]
-    ". Almost all of the backend and frontend is writen with " [:a {:href "http://clojure-doc.org/articles/tutorials/introduction.html"} "Clojure"]
-    ". One part, the Command handler has also been written in " [:a {:href "https://www.baeldung.com/kotlin"} "Kotlin"] " and " [:a {:href "https://doc.rust-lang.org/book/ch00-00-introduction.html"} "Rust"]
-    ". By running them in the same (travis) environment statics were gathered which are shown left."
-    "More information can be found on " [:a {:href "https://github.com/gklijs/open-bank-mark"} "Github"]]])
-
 (defn middle-content
   [selected-nav data]
   (case selected-nav
     :home (home-overview data)
     :bank-employee (apply employee-overview data)
     :client (apply client-overview data)
-    :background (background-contents)
+    :results [results/result-component data]
     [:p.notification.is-info (str "Something went wrong, " selected-nav " is no valid nav")]))
 
 (defn max-items-button

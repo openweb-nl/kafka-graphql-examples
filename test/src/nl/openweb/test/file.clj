@@ -30,7 +30,7 @@
   [[loop-number current-time interaction-time generators-count]]
   (if (= 0 (mod loop-number 20))
     (add (into [loop-number (inst-ms current-time) interaction-time generators-count (load/get-latencies)] (process/get-info)))
-    (add [loop-number (inst-ms current-time) interaction-time generators-count])))
+    (add [loop-number (inst-ms current-time) interaction-time generators-count (load/get-latencies)])))
 
 (defn write
   []

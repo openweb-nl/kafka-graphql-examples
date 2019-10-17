@@ -19,7 +19,7 @@
        (let [middle (re-frame/subscribe [::subs/middle])]
          (apply templates/middle-content @middle))]
       (let [selected-nav (re-frame/subscribe [::subs/selected-nav])]
-        (if-not (= :background @selected-nav)
+        (if-not (= :results @selected-nav)
           [:div.column.is-one-quarter
            (if (= :client @selected-nav)
              (let [login-status (re-frame/subscribe [::subs/login-status])]

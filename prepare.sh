@@ -6,5 +6,4 @@ git submodule update --init &&
   cd ../topology && lein install && cd .. &&
   lein modules uberjar &&
   mkdir secrets && cd secrets && ../create-certs.sh && cd .. && rm -rf secrets &&
-  java -jar test/target/test.jar mapping &&
   docker-compose -f docker-bank.yml -f docker-prep.yml build

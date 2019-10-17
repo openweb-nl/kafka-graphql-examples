@@ -1,8 +1,0 @@
-{
- :category-name "linger.ms config"
- :mapping       {"0"   "linger-ms-0-*"
-                 "10"  "linger-ms-10-*"
-                 "25"  "linger-ms-25-*"
-                 "100" "linger-ms-100-*"}
- :base-url      "http://localhost:8181"
- }

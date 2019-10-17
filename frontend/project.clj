@@ -1,7 +1,11 @@
 (defproject open-bank "0.1.0-SNAPSHOT"
   :description "front-end for the kafka workshop"
   :url "https://stash.open-web.nl/projects/OP/repos/open-bank/browse"
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[cljsjs/vega "5.4.0-0"]
+                 [cljsjs/vega-lite "3.4.0-0"]
+                 [cljsjs/vega-embed "4.0.0-0"]
+                 [cljsjs/vega-tooltip "0.18.1-0"]
+                 [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.9"]

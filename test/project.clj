@@ -7,7 +7,6 @@
                  [etaoin "0.3.5"]
                  [kixi/stats "0.5.2"]
                  [lispyclouds/clj-docker-client "0.2.3"]
-                 [metasoarous/oz "1.6.0-alpha2"]
                  [org.apache.httpcomponents/httpasyncclient "4.1.4"]
                  [org.apache.httpcomponents/httpclient-cache "4.5.10"]
                  [org.clojure/clojure :version]
