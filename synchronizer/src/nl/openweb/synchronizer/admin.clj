@@ -10,7 +10,7 @@
   [topic options nodes]
   (let [[numPartitions replicationFactor _ config] options
         new-topic (NewTopic. topic numPartitions (min replicationFactor nodes))
-        string-config (reduce-kv #(assoc %1 (name %2) %3) {} config)]
+        string-config (reduce-kv #(assoc %1 (name %2) (str %3)) {} config)]
     (.configs new-topic string-config)))
 
 (defn describe-cluster-nodes

@@ -1,7 +1,7 @@
 {"_schemas"                    [1 3 nil {:cleanup.policy "compact"}]
  "__confluent.support.metrics" [1 3 nil {}]
  "_confluent-metrics"          [1 3 nil {}]
- "commands"                    [24 3 [:ConfirmAccountCreation :ConfirmMoneyTransfer] {}]
- "account_creation_feedback"   [24 3 [:AccountCreationConfirmed :AccountCreationFailed] {}]
- "money_transfer_feedback"     [24 3 [:MoneyTransferConfirmed :MoneyTransferFailed] {}]
- "balance_changed"             [24 3 [:BalanceChanged] {}]}
+ "commands"                    [24 3 [:ConfirmAccountCreation :ConfirmMoneyTransfer] {:retention.ms -1}]
+ "account_creation_feedback"   [24 3 [:AccountCreationConfirmed :AccountCreationFailed] {:retention.ms -1}]
+ "money_transfer_feedback"     [24 3 [:MoneyTransferConfirmed :MoneyTransferFailed] {:retention.ms -1}]
+ "balance_changed"             [24 3 [:BalanceChanged] {:retention.ms -1}]}
