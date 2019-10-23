@@ -1,0 +1,65 @@
+# postgres database
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:postgresql://localhost:25431/transactiondb
+    username: java_ge
+    password: kafka-graphql-pw
+    driver-class-name: org.postgresql.Driver
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+    consumer:
+      group-id: graphql-endpoint-consumer-group
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 100
+      properties:
+        specific.avro.reader: true
+    producer:
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 10
+      acks: all
+      client-id: graphql-endpoint-producer
+      properties:
+        linger.ms: 100
+        value.subject.name.strategy: io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
+        auto.register.schemas: false
+  jmx:
+    enabled: false
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+
+server:
+  port: 8888
+
+graphql:
+  tools:
+    schema-location-pattern: bank.graphql
+    # Enable or disable the introspection query. Disabling it puts your server in contravention of the GraphQL
+    # specification and expectations of most clients, so use this option with caution
+    introspection-enabled: true
+  servlet:
+    subscriptions:
+      websocket:
+        path: /graphql-ws
+
+kafka:
+  commands-topic: commands
+  acf-topic: account_creation_feedback
+  mtf-topic: money_transfer_feedback
+  bc-topic: balance_changed
+
+logging:
+  level:
+    ROOT: WARN
+    nl.openweb.graphql_endpoint: WARN

@@ -28,16 +28,19 @@ services:
     depends_on:
       - command-handler
     environment:
-      DB_PORT: "25431"
-      DB_HOSTNAME: "db-ge"
-      KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
-      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      SSL_KEYSTORE_LOCATION: "kafka.graphql-endpoint.keystore.jks"
-      SSL_TRUSTSTORE_LOCATION: "kafka.graphql-endpoint.truststore.jks"
-      SSL_PASSWORD: "kafka-graphql-examples"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db-ge:25431/transactiondb"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
+      SPRING_KAFKA_PROPERTIES_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL: "SSL"
+      SPRING_KAFKA_PROPERTIES_SSL_TRUSTSTORE_LOCATION: "/etc/kafka/secrets/kafka.graphql-endpoint.truststore.jks"
+      SPRING_KAFKA_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: "kafka-graphql-examples"
+      SPRING_KAFKA_PROPERTIES_SSL_KEYSTORE_LOCATION: "/etc/kafka/secrets/kafka.graphql-endpoint.keystore.jks"
+      SPRING_KAFKA_PROPERTIES_SSL_KEYSTORE_PASSWORD: "kafka-graphql-examples"
+      SPRING_KAFKA_PROPERTIES_SSL_KEY_PASSWORD: "kafka-graphql-examples"
+      SPRING_KAFKA_PROPERTIES_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
     volumes:
       - kafka-graphql-certs:/etc/kafka/secrets
-    mem_limit: 400m
+    mem_limit: 2500m
     restart: always
 
   frontend:

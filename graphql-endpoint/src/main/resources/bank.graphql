@@ -1,0 +1,131 @@
+# source: http://localhost:8888/graphql
+# timestamp: Sun Oct 20 2019 15:43:43 GMT+0200 (Central European Summer Time)
+
+schema {
+  query: QueryRoot
+  subscription: SubscriptionRoot
+}
+
+"""The information needed to make transactions"""
+type AccountResult {
+  """The iban of the account."""
+  iban: String
+
+  """In case of error this will be filled."""
+  reason: String
+
+  """The token needed to access the account."""
+  token: String
+}
+
+"""whether the money was added or removed"""
+enum dtype {
+  DEBIT
+  CREDIT
+}
+
+"""The feedback from a money transfer request"""
+type MoneyTransferResult {
+  """The reason the transfer failed."""
+  reason: String
+
+  """Whether the transfer succeeded"""
+  success: Boolean
+
+  """Uuid used for the request"""
+  uuid: String
+}
+
+"""Root of all queries."""
+type QueryRoot {
+  """Get last transaction of all active iban."""
+  all_last_transactions: [Transaction]
+
+  """Select a transaction by its unique id, if it exists."""
+  transaction_by_id(id: Int!): Transaction
+
+  """Get all the transactions of a iban."""
+  transactions_by_iban(iban: String!, max_items: Int!): [Transaction]
+}
+
+"""Root of all subscriptions."""
+type SubscriptionRoot {
+  """
+  Get the result of account creation, account may be just created or already exist
+  """
+  get_account(
+    """Password needed to log in some other time"""
+    password: String!
+
+    """The username used to log in some other time"""
+    username: String!
+  ): AccountResult
+
+  """Try to make a money transfer"""
+  money_transfer(
+    """The amount in euro cents to transfer"""
+    amount: Int!
+
+    """The description of the money transfer"""
+    descr: String!
+
+    """The iban of the account the money is debited"""
+    from: String!
+
+    """The iban of the account the money is credited"""
+    to: String!
+
+    """The token needed to authenticate the transaction"""
+    token: String!
+
+    """The username linked to the account"""
+    username: String!
+
+    """
+    This will be used to prevent duplication, and to allow to retrieve the status later on
+    """
+    uuid: String!
+  ): MoneyTransferResult
+
+  """Get transactions as they happen, with optional filtering"""
+  stream_transactions(
+    """optional filter on DEBIT or CREDIT"""
+    direction: dtype
+
+    """optional filter on matching iban"""
+    iban: String
+
+    """optional filter based on transferred amount"""
+    min_amount: Int
+
+    """optional filter based on transferred amount"""
+    max_amount: Int
+
+    """optional filter based on description"""
+    descr_includes: String
+  ): Transaction
+}
+
+"""The result of money successfully being transferred"""
+type Transaction {
+  """
+  The amount in euros of the change, a negative number means debit, positive is credit.
+  """
+  changed_by: String
+
+  """The description of why the money was transferred."""
+  descr: String
+
+  """Whether it's a DEBIT or CREDIT change."""
+  direction: dtype
+
+  """The iban or name of the counter party."""
+  from_to: String
+
+  """The iban of the account that was changed."""
+  iban: String
+  id: Int!
+
+  """The amount in euros after the transaction."""
+  new_balance: String
+}
