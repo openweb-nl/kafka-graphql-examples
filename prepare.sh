@@ -5,5 +5,6 @@ git submodule update --init &&
   ./build-and-copy-frontend.sh &&
   cd ../topology && lein install && cd .. &&
   lein modules uberjar &&
+  mvn -f graphql-endpoint clean package &&
   mkdir secrets && cd secrets && ../create-certs.sh && cd .. && rm -rf secrets &&
   docker-compose -f docker-bank.yml -f docker-prep.yml build --no-cache

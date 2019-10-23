@@ -22,9 +22,9 @@
 (defn ^:export init []
   (routes/app-routes)
   (re-frame/dispatch-sync [::events/initialize-db])
-  (re-frame/dispatch [::re-graph/init {:ws-url   "ws://localhost:8888/graphql-ws"
-                                       :http-url "http://localhost:8888/graphql"}])
-  (doseq [dispatch (get-dispatches default-db)]
-    (re-frame/dispatch dispatch))
+  (re-frame/dispatch [::re-graph/init :qs {:http-url "http://localhost:8888/graphql"
+                                           :ws-url   nil}])
+  (re-frame/dispatch [::re-graph/init :ss {:ws-url "ws://localhost:8888/graphql-ws"}])
+  (doseq [dispatch (get-dispatches default-db)] (re-frame/dispatch dispatch))
   (dev-setup)
   (mount-root))

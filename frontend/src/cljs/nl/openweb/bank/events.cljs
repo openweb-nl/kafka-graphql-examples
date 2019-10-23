@@ -31,7 +31,7 @@
           dispatches (get-dispatches new-db)]
       {:db         new-db
        :dispatch-n (if (= selected-nav :bank-employee)
-                     (conj dispatches [::re-graph/query "{all_last_transactions {iban}}" nil [::set-all-accounts]])
+                     (conj dispatches [::re-graph/query :qs "{all_last_transactions {iban}}" nil [::set-all-accounts]])
                      dispatches)})))
 
 (re-frame/reg-event-db
@@ -117,6 +117,7 @@
   (fn [cofx [_ username password]]
     {:db       (assoc-in (:db cofx) [:login-status :username] username)
      :dispatch [::re-graph/subscribe
+                :ss
                 :get-account
                 "($username: String! $password: String!){get_account(username: $username password: $password) {reason iban token}}"
                 {:username username :password password}
@@ -127,19 +128,19 @@
   (fn [cofx [_ {:keys [data _] :as _}]]
     (let [new-db (update (:db cofx) :login-status #(merge % (:get_account data)))]
       {:db         new-db
-       :dispatch-n (conj (get-dispatches new-db) [::re-graph/unsubscribe :get-account])})))
+       :dispatch-n (conj (get-dispatches new-db) [::re-graph/unsubscribe :ss :get-account])})))
 
 (re-frame/reg-event-fx
   ::on-deposit
   (fn [cofx [_ {:keys [data _] :as _}]]
     {:db       (assoc (:db cofx) :deposit-data (:money_transfer data))
-     :dispatch [::re-graph/unsubscribe (keyword (str "deposit-" (:uuid (:money_transfer data))))]}))
+     :dispatch [::re-graph/unsubscribe :ss (keyword (str "deposit-" (:uuid (:money_transfer data))))]}))
 
 (re-frame/reg-event-fx
   ::on-transfer
   (fn [cofx [_ {:keys [data _] :as _}]]
     {:db       (update (:db cofx) :transfer-data #(merge % (:money_transfer data)))
-     :dispatch [::re-graph/unsubscribe (keyword (str "transfer-" (:uuid (:money_transfer data))))]}))
+     :dispatch [::re-graph/unsubscribe :ss (keyword (str "transfer-" (:uuid (:money_transfer data))))]}))
 
 (re-frame/reg-event-db
   ::check-valid-login-form
