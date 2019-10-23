@@ -1,0 +1,61 @@
+micronaut:
+  application:
+    name: graphql-endpoint
+  server:
+    port: 8888
+    cors:
+      enabled: true
+      all:
+        allowCredentials: true
+        maxAge: 1728000
+        allowedOrigins:
+          - http://localhost:8181
+datasources:
+  default:
+    url: jdbc:postgresql://${DB_HOSTNAME}:25431/transactiondb?ssl=false
+    username: micronaut_ge
+    password: kafka-graphql-pw
+    driverClassName: org.postgresql.Driver
+    schema-generate: CREATE_DROP
+    dialect: PostgreSQLDialect
+jpa:
+  default:
+    packages-to-scan:
+      - 'nl.openweb.graphql_endpoint.model'
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: false
+kafka:
+  bootstrap:
+    servers: localhost:9092
+  consumers:
+    default:
+      group.id: graphql-endpoint-consumer-group
+      schema.registry.url: ${SR_URL}
+      value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max.poll.records: 100
+      specific.avro.reader: true
+  producers:
+    command-publisher:
+      schema.registry.url: ${SR_URL}
+      value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      key.serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 10
+      acks: all
+      linger.ms: 100
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
+      auto.register.schemas: false
+graphql:
+  enabled: true
+  path: /graphql
+  graphql-ws:
+    enabled: true
+  graphiql:
+    enabled: true
+    version: 0.13.2
+    path: /graphiql
+    template-path: classpath:graphiql/index.html
+

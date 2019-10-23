@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Clojure template
 **/pom.xml
+!graphql-endpoint/pom.xml
 pom.xml.asc
 /lib/
 /classes/

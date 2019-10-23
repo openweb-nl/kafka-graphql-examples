@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "open-bank": {
+      "schemaPath": "graphql-endpoint/src/main/resources/bank.graphql",
+      "extensions": {
+        "endpoints": {
+          "dev": {
+            "url": "http://localhost:8888/graphql",
+            "subscription": "http://localhost:8888/graphql"
+          }
+        }
+      }
+    }
+  }
+}
