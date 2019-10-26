@@ -1,5 +1,6 @@
 (ns nl.openweb.graphql-endpoint.transaction-service
   (:require [com.stuartsierra.component :as component]
+            [clojure.string :as string]
             [clojurewerkz.money.amounts :as ma]
             [clojurewerkz.money.currencies :as cu]
             [clojurewerkz.money.format :as fo]
@@ -74,13 +75,13 @@
 (defn new-service
   []
   {:transaction-service (-> {}
-                  map->TransactionService
-                  (component/using [:db]))})
+                            map->TransactionService
+                            (component/using [:db]))})
 
 (defn find-transaction-by-id
   [db id]
   (if-let [sql-transaction (with-open [conn (j/get-connection (get-in db [:db :datasource]))]
-                              (j/execute-one! conn ["SELECT * FROM transaction WHERE id = ?" id]))]
+                             (j/execute-one! conn ["SELECT * FROM transaction WHERE id = ?" id]))]
     (sql-transaction->graphql-transaction sql-transaction)))
 
 (defn find-transactions-by-iban
@@ -102,13 +103,20 @@
         (assoc :id new-id)
         (assoc-in [:map new-id] [filter-f source-stream]))))
 
+(defn invalid-includes?
+  [s substr]
+  (false? (string/includes? (string/lower-case s) (string/lower-case substr))))
+
 (defn create-transaction-subscription
-  [db source-stream iban min_amount direction]
-  (let [filter-f (fn [bc-map]
+  [db source-stream args]
+  (let [{:keys [iban min_amount max_amount direction descr_includes]} args
+        filter-f (fn [bc-map]
                    (cond
                      (and iban (not= iban (:iban bc-map))) false
                      (and min_amount (< (:cbl bc-map) min_amount)) false
+                     (and max_amount (> (:cbl bc-map) max_amount)) false
                      (and direction (not= direction (:direction bc-map))) false
+                     (and descr_includes (invalid-includes? (:descr bc-map) descr_includes)) false
                      :else true))
         subscriptions (swap! (:subscriptions db) add-stream filter-f source-stream)]
     (:id subscriptions)))

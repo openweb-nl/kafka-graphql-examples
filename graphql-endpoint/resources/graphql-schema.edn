@@ -51,12 +51,16 @@
   :stream_transactions
   {:type        :Transaction
    :description "Get transactions as they happen, with optional filtering"
-   :args        {:iban       {:type        String
-                              :description "optional filter on matching iban"}
-                 :min_amount {:type        Int
-                              :description "optional filter based on transferred amount"}
-                 :direction  {:type        :dtype
-                              :description "optional filter on DEBIT or CREDIT"}}
+   :args        {:iban           {:type        String
+                                  :description "optional filter on matching iban"}
+                 :min_amount     {:type        Int
+                                  :description "optional filter based on transferred amount"}
+                 :max_amount     {:type        Int
+                                  :description "optional filter based on transferred amount"}
+                 :direction      {:type        :dtype
+                                  :description "optional filter on DEBIT or CREDIT"}
+                 :descr_includes {:type        String
+                                  :description "optional filter on containing in description"}}
    :stream      :stream-transactions}
   :get_account
   {:type        :AccountResult

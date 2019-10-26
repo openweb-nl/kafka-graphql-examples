@@ -31,7 +31,7 @@
   (fn [_ args source-stream]
     (log/debug "starting transaction subscription with args" args)
     ;; Create an object for the subscription.
-    (let [id (transaction-service/create-transaction-subscription transaction-service source-stream (:iban args) (:min_amount args) (:direction args))]
+    (let [id (transaction-service/create-transaction-subscription transaction-service source-stream args)]
       ;; Return a function to cleanup the subscription
       #(transaction-service/stop-transaction-subscription transaction-service id))))
 

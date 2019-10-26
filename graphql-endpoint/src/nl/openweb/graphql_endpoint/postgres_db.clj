@@ -1,7 +1,6 @@
 (ns nl.openweb.graphql-endpoint.postgres-db
   (:require [com.stuartsierra.component :as component]
-            [hikari-cp.core :as h]
-            [nl.openweb.topology.clients :as clients]))
+            [hikari-cp.core :as h]))
 
 (def db-port (read-string (or (System/getenv "DB_PORT") "5432")))
 (def db-hostname (or (System/getenv "DB_HOSTNAME") "localhost"))
