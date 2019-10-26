@@ -25,7 +25,7 @@
   :profiles
   {:dev
    {:dependencies [[binaryage/devtools "0.9.10"]
-                   [day8.re-frame/re-frame-10x "0.4.2"]]
+                   [day8.re-frame/re-frame-10x "0.4.4"]]
     :plugins      [[lein-figwheel "0.5.19"]]}}
   :cljsbuild
   {:builds

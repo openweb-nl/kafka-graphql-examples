@@ -24,7 +24,7 @@
 
 (defn optionally-add-ssl
   [properties]
-  (if (and keystore-location truststore-location ssl-password)
+  (when (and keystore-location truststore-location ssl-password)
     (doto properties
       (.put CommonClientConfigs/SECURITY_PROTOCOL_CONFIG (.name SecurityProtocol/SSL))
       (.put SslConfigs/SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG "")

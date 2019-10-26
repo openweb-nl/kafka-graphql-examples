@@ -53,7 +53,7 @@
 
 (defn start
   []
-  (if @admin (.close @admin))
+  (when @admin (.close @admin))
   (let [properties (Properties.)]
     (.put properties AdminClientConfig/BOOTSTRAP_SERVERS_CONFIG brokers)
     (.put properties AdminClientConfig/CLIENT_ID_CONFIG "synchronizer")

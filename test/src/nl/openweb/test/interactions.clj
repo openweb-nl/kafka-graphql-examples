@@ -1,6 +1,5 @@
 (ns nl.openweb.test.interactions
-  (:require [clojure.test :refer :all]
-            [etaoin.api :refer :all]
+  (:require [etaoin.api :as a]
             [etaoin.keys :as k])
   (:import (java.time Instant)))
 
@@ -15,12 +14,12 @@
 (defn wait-till-value
   [expected-value]
   (let [start (inst-ms (Instant/now))]
-    (wait-has-text @driver {:css "#transactions div:nth-child(1) div div:nth-child(1) p:nth-child(1) span:nth-child(2)"} expected-value {:interval 0.05 :timeout @time-out})
+    (a/wait-has-text @driver {:css "#transactions div:nth-child(1) div div:nth-child(1) p:nth-child(1) span:nth-child(2)"} expected-value {:interval 0.05 :timeout @time-out})
     (- (inst-ms (Instant/now)) start)))
 
 (defn run-deposit
   [m]
-  (click @driver (nth deposit-keys m))
+  (a/click @driver (nth deposit-keys m))
   (nth deposit-values m))
 
 (defn run-transaction
@@ -28,10 +27,10 @@
   (let [k (nth transaction-keys m)
         d (nth transaction-descriptions m)]
     (doto @driver
-      (fill {:css "#transfer-form div:nth-child(1) input"} k k/enter)
-      (fill {:css "#transfer-form div:nth-child(2) input"} "NL66OPEN0000000000" k/enter)
-      (fill {:css "#transfer-form div:nth-child(3) input"} d k/enter)
-      (click {:css "#transfer-form div:nth-child(4) div a"}))
+      (a/fill {:css "#transfer-form div:nth-child(1) input"} k k/enter)
+      (a/fill {:css "#transfer-form div:nth-child(2) input"} "NL66OPEN0000000000" k/enter)
+      (a/fill {:css "#transfer-form div:nth-child(3) input"} d k/enter)
+      (a/click {:css "#transfer-form div:nth-child(4) div a"}))
     (nth transaction-values m)))
 
 (defn run
@@ -53,29 +52,29 @@
 (defn wait-till-button
   []
   (let [start (inst-ms (Instant/now))]
-    (wait-exists @driver :deposit-1000 {:interval 0.2 :timeout 30})
+    (a/wait-exists @driver :deposit-1000 {:interval 0.2 :timeout 30})
     (println "waited for" (- (inst-ms (Instant/now)) start) "ms to log in and see the deposit 10 button")))
 
 (defn login
   []
   (doto @driver
-    (set-window-size 1920 1080)
-    (go "http://localhost:8181/")
-    (wait 2)
-    (click {:css "#flex-main-menu a:nth-child(2)"})
-    (wait 2)
-    (fill {:css "#login-form div:nth-child(1) input"} "testuser" k/enter)
-    (fill {:css "#login-form div:nth-child(2) input"} "password" k/enter)
-    (wait 1)
-    (click {:css "#login-form div:nth-child(3)"})))
+    (a/set-window-size 1920 1080)
+    (a/go "http://localhost:8181/")
+    (a/wait 2)
+    (a/click {:css "#flex-main-menu a:nth-child(2)"})
+    (a/wait 2)
+    (a/fill {:css "#login-form div:nth-child(1) input"} "testuser" k/enter)
+    (a/fill {:css "#login-form div:nth-child(2) input"} "password" k/enter)
+    (a/wait 1)
+    (a/click {:css "#login-form div:nth-child(3)"})))
 
   (defn prep
     [max-interaction-time]
     (reset! time-out (int (Math/ceil (/ max-interaction-time 1000))))
-    (reset! driver (chrome-headless))
+    (reset! driver (a/chrome-headless))
     (login)
     (wait-till-button))
 
   (defn close
     []
-    (delete-session @driver))
+    (a/delete-session @driver))

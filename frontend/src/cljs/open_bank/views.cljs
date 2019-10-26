@@ -12,7 +12,7 @@
      [:div.columns
       [:div.column.is-one-quarter
        (let [show-left (re-frame/subscribe [::subs/show-left])]
-         (if @show-left
+         (when @show-left
            (let [left (re-frame/subscribe [::subs/left])]
              (apply templates/left-content @left))))]
       [:div.column.is-half
@@ -21,7 +21,7 @@
       (let [selected-nav (re-frame/subscribe [::subs/selected-nav])]
         (if-not (= :results @selected-nav)
           [:div.column.is-one-quarter
-           (if (= :client @selected-nav)
+           (when (= :client @selected-nav)
              (let [login-status (re-frame/subscribe [::subs/login-status])]
                (templates/login @login-status)))
            (let [max-items (re-frame/subscribe [::subs/max-items])]

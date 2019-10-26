@@ -1,6 +1,5 @@
 (ns nl.openweb.test.core
-  (:require [clojure.test :refer :all]
-            [nl.openweb.test.analysis :as analysis]
+  (:require [nl.openweb.test.analysis :as analysis]
             [nl.openweb.test.load :as load]
             [nl.openweb.test.interactions :as interactions]
             [nl.openweb.test.file :as file]
@@ -62,7 +61,7 @@
         current-time (Instant/now)
         new-time-outs (add-row-or-time-out loop-number generators-count time-outs interaction-time current-time)
         millis-till-next (- (+ start (* min-loop-time loop-number)) (inst-ms current-time))]
-    (if (pos? millis-till-next) (Thread/sleep millis-till-next))
+    (when (pos? millis-till-next) (Thread/sleep millis-till-next))
     (if
       (and
         (> max-time-outs new-time-outs)

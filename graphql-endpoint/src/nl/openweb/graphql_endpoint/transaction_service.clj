@@ -18,7 +18,7 @@
 (defn bc->sql-transaction
   "id needs to be gotten from db and not class"
   [^BalanceChanged bc]
-  (let [^long changed-by (.getChangedBy bc)]
+  (let [changed-by (.getChangedBy bc)]
     {:iban        (.getIban bc)
      :new_balance (fo/format (ma/amount-of euro-c (/ (.getNewBalance bc) 100)) dutch-locale)
      :changed_by  (fo/format (ma/amount-of euro-c (/ (Math/abs changed-by) 100)) dutch-locale)
@@ -50,7 +50,7 @@
         sql-map (insert-transaction! datasource sql-transaction)
         graphql-transaction (sql-transaction->graphql-transaction sql-map (.getChangedBy bc))]
     (doseq [[filter-f source-stream] (vals (:map @subscriptions))]
-      (if (filter-f graphql-transaction)
+      (when (filter-f graphql-transaction)
         (source-stream graphql-transaction)))))
 
 (defrecord TransactionService []

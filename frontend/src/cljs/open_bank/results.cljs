@@ -41,9 +41,9 @@
   [results]
   (let [{:keys [category x-value]} results]
     [:div.content
-     [:p (str "Selected category: " (category categories))]
-     [:p (str "Selected x-value: " (x-value x-values))]
-     [:p "Select x-value"]
+     [:p "Selected category:\u00A0" [:strong (category categories)]]
+     [:p "Selected x-value:\u00A0" [:strong (x-value x-values)]]
+     [:p "Select x-value:"]
      [:div.buttons (for [new-x-value (keys (dissoc x-values x-value))]
                      (select-button (name category) (name new-x-value) false))]]))
 

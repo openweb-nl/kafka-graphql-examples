@@ -11,12 +11,12 @@
 
 (re-frame/reg-event-db
   ::on-transaction
-  (fn [db [_ {:keys [data errors] :as payload}]]
+  (fn [db [_ {:keys [data _] :as _}]]
     (assoc db :last-transaction data)))
 
 (re-frame/reg-event-db
   ::set-all-accounts
-  (fn [db [_ {:keys [data errors] :as payload}]]
+  (fn [db [_ {:keys [data _] :as _}]]
     (assoc db :all-accounts {:accounts (:all_last_transactions data) :page 1})))
 
 (re-frame/reg-event-db
@@ -75,15 +75,15 @@
 
 (re-frame/reg-event-db
   ::on-transaction
-  (fn [db [_ {:keys [data errors] :as payload}]]
+  (fn [db [_ {:keys [data _] :as _}]]
     (let [old-list (:list (:transactions db))
           new-list (take (:max-items db) (conj old-list (:stream_transactions data)))
-          new-last (if (= (:max-items db) (count old-list)) (last old-list))]
+          new-last (when (= (:max-items db) (count old-list)) (last old-list))]
       (assoc db :transactions {:list new-list :last new-last}))))
 
 (re-frame/reg-event-db
   ::reset-transactions
-  (fn [db [_ {:keys [data errors] :as payload}]]
+  (fn [db [_ {:keys [data _] :as _}]]
     (assoc db :transactions {:list (apply list (:transactions_by_iban data)) :last nil})))
 
 (re-frame/reg-event-db
@@ -124,20 +124,20 @@
 
 (re-frame/reg-event-fx
   ::on-get-account
-  (fn [cofx [_ {:keys [data errors] :as payload}]]
+  (fn [cofx [_ {:keys [data _] :as _}]]
     (let [new-db (update (:db cofx) :login-status #(merge % (:get_account data)))]
       {:db         new-db
        :dispatch-n (conj (get-dispatches new-db) [::re-graph/unsubscribe :get-account])})))
 
 (re-frame/reg-event-fx
   ::on-deposit
-  (fn [cofx [_ {:keys [data errors] :as payload}]]
+  (fn [cofx [_ {:keys [data _] :as _}]]
     {:db       (assoc (:db cofx) :deposit-data (:money_transfer data))
      :dispatch [::re-graph/unsubscribe (keyword (str "deposit-" (:uuid (:money_transfer data))))]}))
 
 (re-frame/reg-event-fx
   ::on-transfer
-  (fn [cofx [_ {:keys [data errors] :as payload}]]
+  (fn [cofx [_ {:keys [data _] :as _}]]
     {:db       (update (:db cofx) :transfer-data #(merge % (:money_transfer data)))
      :dispatch [::re-graph/unsubscribe (keyword (str "transfer-" (:uuid (:money_transfer data))))]}))
 

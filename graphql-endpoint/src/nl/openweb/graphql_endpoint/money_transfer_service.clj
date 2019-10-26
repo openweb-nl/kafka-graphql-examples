@@ -27,7 +27,7 @@
   [^ConsumerRecord cr subscriptions]
   (let [v-map (v->map (.value cr))]
     (doseq [[s-id source-stream] (vals (:map @subscriptions))]
-      (if (= s-id (:uuid v-map))
+      (when (= s-id (:uuid v-map))
         (source-stream v-map)))))
 
 (defn add-stream

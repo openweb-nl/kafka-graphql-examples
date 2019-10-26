@@ -58,12 +58,12 @@
         latency (- (System/currentTimeMillis) (read-string time))]
     (swap! latencies conj latency)
     (gqlc/unsubscribe ws-connection id)
-    (if (< latency min-time-between-subscriptions) (Thread/sleep (- min-time-between-subscriptions latency)))
+    (when (< latency min-time-between-subscriptions) (Thread/sleep (- min-time-between-subscriptions latency)))
     (condp = transfer-type
-      :from (if (not success) (throw (Exception. "from transfer failed")))
-      :to (if (not success) (throw (Exception. "to transfer failed")))
-      :invalid_token (if (not= reason "invalid token") (throw (Exception. "invalid token transfer failed")))
-      :insufficient_funds (if (not= reason "insufficient funds") (throw (Exception. "insufficient funds transfer failed"))))
+      :from (when (not success) (throw (Exception. "from transfer failed")))
+      :to (when (not success) (throw (Exception. "to transfer failed")))
+      :invalid_token (when (not= reason "invalid token") (throw (Exception. "invalid token transfer failed")))
+      :insufficient_funds (when (not= reason "insufficient funds") (throw (Exception. "insufficient funds transfer failed"))))
     (money-transfer ws-connection sequence-number account-first account-second (next-type-and-amount transfer-type amount))))
 
 (defn handle-account-add

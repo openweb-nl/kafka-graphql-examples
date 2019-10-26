@@ -45,14 +45,14 @@
 
 (defn find-balance-by-iban
   [iban]
-  (if
+  (when
     (vg/valid-open-iban iban)
     (with-open [conn (j/get-connection @datasource)]
       (j/execute-one! conn ["SELECT * FROM balance WHERE iban = ?" iban]))))
 
 (defn transfer-from!
   [iban token amount]
-  (if
+  (when
     (vg/valid-open-iban iban)
     (with-open [conn (j/get-connection @datasource)]
       (j/execute-one! conn ["
@@ -67,7 +67,7 @@
 
 (defn transfer-to!
   [iban amount]
-  (if
+  (when
     (vg/valid-open-iban iban)
     (with-open [conn (j/get-connection @datasource)]
       (j/execute-one! conn ["UPDATE balance SET amount = balance.amount + ? WHERE balance.iban = ? RETURNING balance.*"
@@ -109,10 +109,10 @@
      :token  (:cac/token result)
      :reason (:cac/reason result)}
     (let [iban (vg/new-iban)
-          reason (if (find-balance-by-iban iban) "generated iban already exists, try again")
+          reason (when (find-balance-by-iban iban) "generated iban already exists, try again")
           mp {:uuid uuid :iban iban :token (vg/new-token) :reason reason}]
       (insert-cac! mp)
-      (if (nil? (:reason mp)) (insert-balance! mp))
+      (when (nil? (:reason mp)) (insert-balance! mp))
       mp)))
 
 (defn transfer-update!

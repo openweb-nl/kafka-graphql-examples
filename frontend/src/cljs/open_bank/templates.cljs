@@ -9,7 +9,7 @@
 (defn navbar-item
   [nav selected-nav results]
   [:a.navbar-item
-   {:class (if (= selected-nav nav) "is-active")
+   {:class (when (= selected-nav nav) "is-active")
     :href  (if
              (= nav :results)
              (routes/url-for nav :category (name (:category results)) :x-value (name (:x-value results)))
@@ -21,7 +21,7 @@
   [:nav#nav-bar.navbar.is-fixed-top {:role "navigation" :aria-label "main navigation"}
    [:div.navbar-brand
     [:a.navbar-item
-     {:class (if (= selected-nav :home) "is-active")
+     {:class (when (= selected-nav :home) "is-active")
       :href  (routes/url-for :home)}
      [:img {:src "/img/logo.svg" :style {:width "140px"}}]]
     [:a.navbar-item.is-hidden-tablet
@@ -43,12 +43,12 @@
      [:span.icon {:style {:color "#24292e"}} [:i.mdi.mdi-24px.mdi-github-circle]]]
     [:button.button.navbar-burger
      {:on-click #(re-frame/dispatch [::events/toggle-mob-expand])
-      :class    (if expand "is-active")}
+      :class    (when expand "is-active")}
      [:span]
      [:span]
      [:span]]]
    [:div#main-menu.navbar-menu
-    {:class (if expand "is-active")}
+    {:class (when expand "is-active")}
     [:div#flex-main-menu.navbar-start
      (map #(navbar-item % selected-nav results) [:bank-employee :client :results])]
     [:div.navbar-end
@@ -112,23 +112,23 @@
   [:nav.pagination.is-small.is-rounded
    {:aria-label "pagination", :role "navigation"}
    [:ul.pagination-list
-    (if (> page 2)
+    (when (> page 2)
       [:li [:a.pagination-link {:aria-label "Goto page 1"
                                 :on-click   #(re-frame/dispatch [::events/set-all-accounts-page 1])} "1"]])
-    (if (> page 3)
+    (when (> page 3)
       [:li [:span.pagination-ellipsis]])
-    (if (> page 1)
+    (when (> page 1)
       [:li [:a.pagination-link {:aria-label (str "Goto page " (dec page))
                                 :on-click   #(re-frame/dispatch [::events/set-all-accounts-page (dec page)])} (dec page)]])
     [:li
      [:a.pagination-link.is-current
       {:aria-current "page", :aria-label (str "Page " page)} page]]
-    (if (not= page total-pages)
+    (when (not= page total-pages)
       [:li [:a.pagination-link {:aria-label (str "Goto page " (inc page))
                                 :on-click   #(re-frame/dispatch [::events/set-all-accounts-page (inc page)])} (inc page)]])
-    (if (> total-pages (+ page 2))
+    (when (> total-pages (+ page 2))
       [:li [:span.pagination-ellipsis]])
-    (if (> total-pages (inc page))
+    (when (> total-pages (inc page))
       [:li [:a.pagination-link {:aria-label (str "Goto page " total-pages)
                                 :on-click   #(re-frame/dispatch [::events/set-all-accounts-page total-pages])} total-pages]])]])
 
@@ -139,10 +139,10 @@
         total-pages (quot (+ 19 (count all-accounts)) 20)
         page-accounts (take 20 (drop (* (dec page) 20) all-accounts))]
     [:div
-     (if (> total-pages 1) [:div (pagination page total-pages) [:br]])
+     (when (> total-pages 1) [:div (pagination page total-pages) [:br]])
      [:div.content
       (for [transaction page-accounts] (iban-button transaction employee-iban))]
-     (if (> total-pages 1) (pagination page total-pages))]))
+     (when (> total-pages 1) (pagination page total-pages))]))
 
 (defn intro
   [company-iban]
@@ -180,21 +180,21 @@
          (assoc map :style {:visibility "hidden"})
          map))
      [:div.columns.is-multiline
-      (if (or changed-by from-to)
+      (when (or changed-by from-to)
         [:div.column.is-half-tablet.is-one-third-desktop
          [:p
-          (if direction (if (= direction "CREDIT")
-                          [:span.icon.is-pulled-left {:style {:color "#95c23d"}} [:i.mdi.mdi-24px.mdi-arrow-up]]
-                          [:span.icon.is-pulled-left {:style {:color "#b30000"}} [:i.mdi.mdi-24px.mdi-arrow-down]]))
-          (if changed-by [:span.is-pulled-right changed-by])]
-         (if from-to [:p from-to])
-         (if id [:p id])])
-      (if descr
+          (when direction (if (= direction "CREDIT")
+                            [:span.icon.is-pulled-left {:style {:color "#95c23d"}} [:i.mdi.mdi-24px.mdi-arrow-up]]
+                            [:span.icon.is-pulled-left {:style {:color "#b30000"}} [:i.mdi.mdi-24px.mdi-arrow-down]]))
+          (when changed-by [:span.is-pulled-right changed-by])]
+         (when from-to [:p from-to])
+         (when id [:p id])])
+      (when descr
         [:div.column.is-half-tablet.is-one-third-desktop [:p descr]])
-      (if (or new-balance iban)
+      (when (or new-balance iban)
         [:div.column.is-half-tablet.is-one-third-desktop
-         (if new-balance [:p new-balance])
-         (if iban [:p iban])])]]))
+         (when new-balance [:p new-balance])
+         (when iban [:p iban])])]]))
 
 (defn show-transactions
   [transactions]

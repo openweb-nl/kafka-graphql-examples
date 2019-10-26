@@ -35,10 +35,10 @@
   (let [v (.value cr)
         uuid (bytes->uuid (.bytes (.getId v)))
         v-map (v->map v)]
-    (if (:reason v-map)
+    (when (:reason v-map)
       (remove-account! datasource uuid))
     (doseq [[s-id source-stream] (vals (:map @subscriptions))]
-      (if (= s-id uuid)
+      (when (= s-id uuid)
         (source-stream v-map)))))
 
 (defn add-stream

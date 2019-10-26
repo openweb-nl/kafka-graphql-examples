@@ -5,7 +5,7 @@
 
 (defn valid
   [row nth-in-row]
-  (if (< nth-in-row (count row))
+  (when (< nth-in-row (count row))
     (let [value (nth row nth-in-row)]
       (if
         (coll? value)
