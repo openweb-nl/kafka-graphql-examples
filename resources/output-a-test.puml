@@ -7,12 +7,12 @@ package nl.openweb.test #Yellow {
     component file.clj as fi
     component analysis.clj as an
 }
-file mapping.edn as map
+file "{category}.edn" as map
 file "test-runs" as tr
-file ".html files" as ht
+file "{category}.json" as ht
 
 fi <-- map :reads the file
 fi <-- tr: reads the mapped files
-an --> ht: combine the data to\na format vega can use\nand add imports etc.
+an --> ht: combine the data to\la format vega can use.
 
 @enduml
