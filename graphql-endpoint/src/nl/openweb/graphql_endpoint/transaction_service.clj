@@ -103,22 +103,30 @@
         (assoc :id new-id)
         (assoc-in [:map new-id] [filter-f source-stream]))))
 
-(defn invalid-includes?
+(defn includes?
   [s substr]
-  (false? (string/includes? (string/lower-case s) (string/lower-case substr))))
+  (string/includes? (string/lower-case s) (string/lower-case substr)))
+
+(defn optionally-add-premise
+  [premises arg premise]
+  (if arg
+    (conj premises (partial premise arg))
+    premises))
+
+(defn filter-function
+  [args]
+  (let [{:keys [iban min_amount max_amount direction descr_includes]} args
+        premises []
+        premises (optionally-add-premise premises iban #(= %1 (:iban %2)))
+        premises (optionally-add-premise premises min_amount #(<= %1 (:cbl %2)))
+        premises (optionally-add-premise premises max_amount #(>= %1 (:cbl %2)))
+        premises (optionally-add-premise premises direction #(= %1 (:direction %2)))
+        premises (optionally-add-premise premises descr_includes #(includes? (:desc %2) %1))]
+    (fn [bc-map] (every? #(% bc-map) premises))))
 
 (defn create-transaction-subscription
   [db source-stream args]
-  (let [{:keys [iban min_amount max_amount direction descr_includes]} args
-        filter-f (fn [bc-map]
-                   (cond
-                     (and iban (not= iban (:iban bc-map))) false
-                     (and min_amount (< (:cbl bc-map) min_amount)) false
-                     (and max_amount (> (:cbl bc-map) max_amount)) false
-                     (and direction (not= direction (:direction bc-map))) false
-                     (and descr_includes (invalid-includes? (:descr bc-map) descr_includes)) false
-                     :else true))
-        subscriptions (swap! (:subscriptions db) add-stream filter-f source-stream)]
+  (let [subscriptions (swap! (:subscriptions db) add-stream (filter-function args) source-stream)]
     (:id subscriptions)))
 
 (defn stop-transaction-subscription
