@@ -31,7 +31,7 @@ Contents
 This project is an example of an event sourcing application using Kafka.
 The front-end can be viewed at [kafka-graphql](https://kafka-graphql.gklijs.tech/) which is for now configured to have the endpoint running on localhost.
 It also contains an end-to-end test making it possible to compare different implementations or configurations. For example one could set the `linger.ms` setting at different values in the topology module, so everything build on Clojure will use that setting.
-It's possible to run tests in travis using the `.travis.yml` file, or on some other machine using the `loop.sh` script. Before you can use the `loop.sh` script you do need to build it first. There is an [open issue](todo) to make it easier to run the whole setup locally.
+It's possible to run tests in travis using the `.travis.yml` file, or on some other machine using the `loop.sh` script. Before you can use the `loop.sh` script you do need to build it first. There is an [open issue](https://github.com/openweb-nl/kafka-graphql-examples/issues/1) to make it easier to run the whole setup locally.
 
 If you don't really know what Kafka is, then it's a good idea to read [an introduction to Kafka](https://hackernoon.com/thorough-introduction-to-apache-kafka-6fbf2989bbc1).
 Another good source are the videos from the 2019 Kafka Summit in San Fransisco, especially the [keynotes](https://www.confluent.io/resources/kafka-summit-san-francisco-2019/).
@@ -50,8 +50,9 @@ You can use this with Kafka streams api to generate a 'table' view of a topic.
 This could for example be used to keep settings of the user, where instead of all the events we eventually only keep the latest one. 
 
 This project and it's modules are build with [Clojure](https://clojure.org/), and uses [Leiningen](https://leiningen.org/) as build tool.
-For building locally sassc is needed, for unix you can see the [travis config](/.travis.yml) or [ask ubuntu answer](https://askubuntu.com/questions/566675/how-to-install-node-sass-gulp-sass-on-ubuntu-14-04-or-linux-mint-17/566681#566681), on Mac with brew you can use `brew install sassc`.Some modules can be used from java, and some of the code generated (Avro classes) are also java.
-Even when using Docker you need to have leiningen and sassc installed to build the project. This might change with [open issue](todo).
+For building locally sassc is needed, for unix you can see the [travis config](/.travis.yml) or [ask ubuntu answer](https://askubuntu.com/questions/566675/how-to-install-node-sass-gulp-sass-on-ubuntu-14-04-or-linux-mint-17/566681#566681), on Mac with brew you can use `brew install sassc`.
+Some modules can be used from java, and some of the code generated (Avro classes) are also java.
+Even when using Docker you need to have leiningen and sassc installed to build the project. This might change with [open issue](https://github.com/openweb-nl/kafka-graphql-examples/issues/1).
 
 The base idea of the project is to serve as an example of event sourcing, where instead of having a 'state' as source of truth we use events. It makes use of some of the best practices by using both events which start with 'Confirm', which need to be handled by another component and lead to either a 'Confirmed' or 'Failed' event.
 By using id's in the messages, when needed the creator of the 'Confirm' event can eventually know whether the command succeeded.
