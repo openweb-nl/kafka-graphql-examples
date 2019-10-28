@@ -1,6 +1,6 @@
 # Apache Kafka with GraphQL examples
 
-This project is all about experimenting with Kafka and GraphQL.
+This project is all about experimenting with Kafka and GraphQL. The frontend is deployed [here](https://graphql.gklijs.tech/results/linger-ms-config/average-latency) not working live backend but dus contain some results..
 
 [![Build Status](https://travis-ci.com/openweb-nl/open-bank-mark.svg?branch=master)](https://travis-ci.com/openweb-nl/open-bank-mark)
 
