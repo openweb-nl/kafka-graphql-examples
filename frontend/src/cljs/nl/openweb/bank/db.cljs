@@ -1,4 +1,4 @@
-(ns open-bank.db)
+(ns nl.openweb.bank.db)
 
 (def default-db
   {:selected-nav          :home

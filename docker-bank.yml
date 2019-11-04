@@ -13,9 +13,9 @@ services:
       SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       SSL_KEYSTORE_LOCATION: "kafka.command-handler.keystore.jks"
       SSL_TRUSTSTORE_LOCATION: "kafka.command-handler.truststore.jks"
-      SSL_PASSWORD: "openbanksafe"
+      SSL_PASSWORD: "kafka-graphql-examples"
     volumes:
-      - open-bank-certs:/etc/kafka/secrets
+      - kafka-graphql-certs:/etc/kafka/secrets
     mem_limit: 300m
     restart: always
 
@@ -34,9 +34,9 @@ services:
       SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       SSL_KEYSTORE_LOCATION: "kafka.graphql-endpoint.keystore.jks"
       SSL_TRUSTSTORE_LOCATION: "kafka.graphql-endpoint.truststore.jks"
-      SSL_PASSWORD: "openbanksafe"
+      SSL_PASSWORD: "kafka-graphql-examples"
     volumes:
-      - open-bank-certs:/etc/kafka/secrets
+      - kafka-graphql-certs:/etc/kafka/secrets
     mem_limit: 400m
     restart: always
 
@@ -53,5 +53,5 @@ services:
     restart: always
 
 volumes:
-  open-bank-certs:
+  kafka-graphql-certs:
     external: true

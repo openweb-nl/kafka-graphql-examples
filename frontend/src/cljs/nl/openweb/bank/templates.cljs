@@ -1,8 +1,8 @@
-(ns open-bank.templates
+(ns nl.openweb.bank.templates
   (:require [clojure.string :as string]
-            [open-bank.events :as events]
-            [open-bank.results :as results]
-            [open-bank.routes :as routes]
+            [nl.openweb.bank.events :as events]
+            [nl.openweb.bank.results :as results]
+            [nl.openweb.bank.routes :as routes]
             [re-frame.core :as re-frame]
             [re-graph.core :as re-graph]))
 
@@ -39,7 +39,7 @@
      {:target "_blank", :href "https://www.linkedin.com/company/open-web-it-services/"}
      [:span.icon {:style {:color "#0077B5"}} [:i.mdi.mdi-24px.mdi-linkedin-box]]]
     [:a.navbar-item.is-hidden-desktop
-     {:target "_blank", :href "https://github.com/openweb-nl/open-bank-mark"}
+     {:target "_blank", :href "https://github.com/openweb-nl/kafka-graphql-examples"}
      [:span.icon {:style {:color "#24292e"}} [:i.mdi.mdi-24px.mdi-github-circle]]]
     [:button.button.navbar-burger
      {:on-click #(re-frame/dispatch [::events/toggle-mob-expand])
@@ -62,7 +62,7 @@
       {:target "_blank", :href "https://www.linkedin.com/company/open-web-it-services/"}
       [:span.icon {:style {:color "#0077B5"}} [:i.mdi.mdi-24px.mdi-linkedin-box]]]
      [:a.navbar-item.is-hidden-touch
-      {:target "_blank", :href "https://github.com/openweb-nl/open-bank-mark"}
+      {:target "_blank", :href "https://github.com/openweb-nl/kafka-graphql-examples"}
       [:span.icon {:style {:color "#24292e"}} [:i.mdi.mdi-24px.mdi-github-circle]]]]]])
 
 (defn deposit-button
@@ -82,7 +82,7 @@
                                        :username username
                                        :iban     iban
                                        :uuid     uuid}
-                                      [:open-bank.events/on-deposit]])}
+                                      [::events/on-deposit]])}
       (str "deposit " (/ amount 100) " euro")]]))
 
 
@@ -270,7 +270,7 @@
                                                         :to       @to
                                                         :descr    @descr
                                                         :uuid     uuid}
-                                                       [:open-bank.events/on-transfer]]))}
+                                                       [::events/on-transfer]]))}
                      {:disabled true})
                    "Transfer"]]]
      (if-let [reason (:reason transfer-data)]

@@ -1,4 +1,4 @@
-(ns open-bank.transactions
+(ns nl.openweb.bank.transactions
   (:require [re-graph.core :as re-graph]))
 
 (def common-params
@@ -34,14 +34,14 @@
     (let [new-sub-id (inc (:subscription-id db))]
       (if-let [ats (:active-t-subscription db)]
         [[::re-graph/unsubscribe (keyword (str "transactions-" ats))]
-         [::re-graph/query query-query arguments-map [:open-bank.events/reset-transactions]]
-         [::re-graph/subscribe (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:open-bank.events/on-transaction]]
-         [:open-bank.events/set-subscription-id new-sub-id]]
-        [[::re-graph/query query-query arguments-map [:open-bank.events/reset-transactions]]
-         [::re-graph/subscribe (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:open-bank.events/on-transaction]]
-         [:open-bank.events/set-subscription-id new-sub-id]]))
+         [::re-graph/query query-query arguments-map [:nl.openweb.bank.events/reset-transactions]]
+         [::re-graph/subscribe (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:nl.openweb.bank.events/on-transaction]]
+         [:nl.openweb.bank.events/set-subscription-id new-sub-id]]
+        [[::re-graph/query query-query arguments-map [:nl.openweb.bank.events/reset-transactions]]
+         [::re-graph/subscribe (keyword (str "transactions-" new-sub-id)) subscription-query arguments-map [:nl.openweb.bank.events/on-transaction]]
+         [:nl.openweb.bank.events/set-subscription-id new-sub-id]]))
     (if-let [ats (:active-t-subscription db)]
       [[::re-graph/unsubscribe (keyword (str "transactions-" ats))]
-       [:open-bank.events/remove-active-t-subscription]
-       [:open-bank.events/remove-transactions]]
-      [[:open-bank.events/remove-transactions]])))
+       [:nl.openweb.bank.events/remove-active-t-subscription]
+       [:nl.openweb.bank.events/remove-transactions]]
+      [[:nl.openweb.bank.events/remove-transactions]])))

@@ -235,7 +235,7 @@ The endpoint is created using [lacinia](http://lacinia.readthedocs.io/en/latest/
 ### <a id="frontend">Front-end</a>
 
 This is a basic nginx container which contains the output from the Clojurescript re-frame code. The container is exposed at port 8181.
-The location of the GraphQL endpoint is configured in [core.cljs](frontend/src/cljs/open_bank/core.cljs) this is configured to use localhost.
+The location of the GraphQL endpoint is configured in [core.cljs](frontend/src/cljs/nl/openweb/bank/core.cljs) this is configured to use localhost.
 Nginx now just serves static files, but could be used to proxy traffic to the graphql endpoint to prevent CORS.
 If you run into CORS trouble localy you may need to add the specific port you use to run the front-end to the [server.clj](graphql-endpoint/src/nl/openweb/graphql_endpoint/server.clj) in the endpoint at the `:io.pedestal.http/allowed-origins` key.
 

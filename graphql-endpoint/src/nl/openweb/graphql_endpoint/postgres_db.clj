@@ -4,7 +4,7 @@
 
 (def db-port (read-string (or (System/getenv "DB_PORT") "5432")))
 (def db-hostname (or (System/getenv "DB_HOSTNAME") "localhost"))
-(def db-password (or (System/getenv "DB_PASSWORD") "open-bank"))
+(def db-password (or (System/getenv "DB_PASSWORD") "kafka-graphql-pw"))
 
 (defn datasource-options
   [db-port db-hostname db-password]

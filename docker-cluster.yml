@@ -96,7 +96,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,PE:PLAINTEXT,SE:SSL
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     volumes:
-      - open-bank-certs:/etc/kafka/secrets
+      - kafka-graphql-certs:/etc/kafka/secrets
     mem_limit: 2500m
     restart: always
 
@@ -129,7 +129,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,PE:PLAINTEXT,SE:SSL
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
     volumes:
-      - open-bank-certs:/etc/kafka/secrets
+      - kafka-graphql-certs:/etc/kafka/secrets
     mem_limit: 2500m
     restart: always
 
@@ -162,7 +162,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SSL:SSL,PE:PLAINTEXT,SE:SSL
       CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
     volumes:
-      - open-bank-certs:/etc/kafka/secrets
+      - kafka-graphql-certs:/etc/kafka/secrets
     mem_limit: 2500m
     restart: always
 
@@ -186,6 +186,6 @@ services:
     restart: always
 
 volumes:
-  open-bank-certs:
+  kafka-graphql-certs:
     external: true
 

@@ -1,4 +1,4 @@
-(ns open-bank.subs
+(ns nl.openweb.bank.subs
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub

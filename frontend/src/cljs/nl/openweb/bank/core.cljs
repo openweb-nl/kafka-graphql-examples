@@ -1,13 +1,13 @@
-(ns open-bank.core
+(ns nl.openweb.bank.core
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [re-graph.core :as re-graph]
-            [open-bank.config :as config]
-            [open-bank.db :refer [default-db]]
-            [open-bank.transactions :refer [get-dispatches]]
-            [open-bank.events :as events]
-            [open-bank.routes :as routes]
-            [open-bank.views :as views]))
+            [nl.openweb.bank.config :as config]
+            [nl.openweb.bank.db :refer [default-db]]
+            [nl.openweb.bank.transactions :refer [get-dispatches]]
+            [nl.openweb.bank.events :as events]
+            [nl.openweb.bank.routes :as routes]
+            [nl.openweb.bank.views :as views]))
 
 (defn dev-setup []
   (when config/debug?

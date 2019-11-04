@@ -1,6 +1,6 @@
-(defproject open-bank "0.1.0-SNAPSHOT"
+(defproject nl.openweb/bank "0.1.0-SNAPSHOT"
   :description "front-end for the kafka workshop"
-  :url "https://stash.open-web.nl/projects/OP/repos/open-bank/browse"
+  :url "https://github.com/openweb-nl/kafka-graphql-examples/tree/master/frontend"
   :dependencies [[cljsjs/vega "5.4.0-0"]
                  [cljsjs/vega-lite "3.4.0-0"]
                  [cljsjs/vega-embed "4.0.0-0"]
@@ -31,8 +31,8 @@
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs"]
-     :figwheel     {:on-jsload "open-bank.core/mount-root"}
-     :compiler     {:main                 open-bank.core
+     :figwheel     {:on-jsload "nl.openweb.bank.core/mount-root"}
+     :compiler     {:main                 nl.openweb.bank.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
                     :optimizations        :none
@@ -45,7 +45,7 @@
 
     {:id           "min"
      :source-paths ["src/cljs"]
-     :compiler     {:main            open-bank.core
+     :compiler     {:main            nl.openweb.bank.core
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}

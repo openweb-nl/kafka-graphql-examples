@@ -1,10 +1,9 @@
-(ns open-bank.results
+(ns nl.openweb.bank.results
   (:require [cljsjs.vega]
             [cljsjs.vega-lite]
             [cljsjs.vega-embed]
             [cljsjs.vega-tooltip]
-            [clojure.string :as string]
-            [open-bank.routes :as routes]
+            [nl.openweb.bank.routes :as routes]
             [reagent.core :as r]))
 
 (def categories {:linger-ms-config "linger.ms config"})
