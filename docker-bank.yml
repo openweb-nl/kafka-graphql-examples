@@ -8,7 +8,7 @@ services:
     container_name: command-handler
     environment:
       DB_PORT: "25432"
-      DB_HOSTNAME: "db"
+      DB_HOSTNAME: "db-ch"
       KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
       SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       SSL_KEYSTORE_LOCATION: "kafka.command-handler.keystore.jks"
@@ -28,8 +28,8 @@ services:
     depends_on:
       - command-handler
     environment:
-      DB_PORT: "25432"
-      DB_HOSTNAME: "db"
+      DB_PORT: "25431"
+      DB_HOSTNAME: "db-ge"
       KAFKA_BROKERS: "kafka-1:19093,kafka-2:19095,kafka-3:19097"
       SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       SSL_KEYSTORE_LOCATION: "kafka.graphql-endpoint.keystore.jks"

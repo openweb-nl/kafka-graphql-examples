@@ -2,14 +2,24 @@
 version: "2.2"
 services:
 
-  db:
+  db-ch:
     image: postgres:11-alpine
-    container_name: db
+    container_name: db-ch
     ports:
       - "25432:25432"
     environment:
       POSTGRES_PASSWORD: aAbB24CcO03XxZuUiiiX2
     command: -p 25432
+    restart: always
+
+  db-ge:
+    image: postgres:11-alpine
+    container_name: db-ge
+    ports:
+      - "25431:25431"
+    environment:
+      POSTGRES_PASSWORD: aAbB24CcO03XxZuUiiiX3
+    command: -p 25431
     restart: always
 
   zookeeper-1:

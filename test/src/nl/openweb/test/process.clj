@@ -6,7 +6,8 @@
 (defn init
   []
   (reset! docker-conn (docker/connect))
-  (docker/stats @docker-conn "db")
+  (docker/stats @docker-conn "db-ch")
+  (docker/stats @docker-conn "db-ge")
   (docker/stats @docker-conn "command-handler")
   (docker/stats @docker-conn "kafka-1")
   (docker/stats @docker-conn "kafka-2")
@@ -15,14 +16,17 @@
 
 (defn get-info
   []
-  (let [db-stats (docker/stats @docker-conn "db")
+  (let [db-ch-stats (docker/stats @docker-conn "db-ch")
+        db-ge-stats (docker/stats @docker-conn "db-ge")
         ch-stats (docker/stats @docker-conn "command-handler")
         k1-stats (docker/stats @docker-conn "kafka-1")
         k2-stats (docker/stats @docker-conn "kafka-2")
         k3-stats (docker/stats @docker-conn "kafka-3")
         ge-stats (docker/stats @docker-conn "graphql-endpoint")]
-    [(:cpu-pct db-stats)
-     (:mem-mib db-stats)
+    [(:cpu-pct db-ch-stats)
+     (:mem-mib db-ch-stats)
+     (:cpu-pct db-ge-stats)
+     (:mem-mib db-ge-stats)
      (:cpu-pct ch-stats)
      (:mem-mib ch-stats)
      (+ (:cpu-pct k1-stats) (:cpu-pct k2-stats) (:cpu-pct k3-stats))
