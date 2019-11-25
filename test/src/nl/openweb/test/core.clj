@@ -7,31 +7,24 @@
   (:import (java.time Instant))
   (:gen-class))
 
-(def max-interaction-time 5000)
-(def min-loop-time 1000)
-(def max-loops 6000)
-(def max-time-outs 10)
-(def seconds-to-generate-generator 60)
-(def loops-for-success 1000)
-
 (defn init
-  []
+  [config]
   (process/init)
-  (file/init)
-  (interactions/prep max-interaction-time))
+  (file/init (:base-test-file-name config))
+  (interactions/prep (:max-interaction-time config)))
 
 (defn close
-  [loop-number]
+  [config loop-number]
   (interactions/close)
   (file/close)
   (process/close)
-  (if (> loop-number loops-for-success)
+  (if (>= loop-number (:loops-for-success config))
     (System/exit 0)
     (System/exit 1)))
 
 (defn optionally-increase-generators
-  [generators-count loop-number]
-  (if (= 0 (mod loop-number seconds-to-generate-generator))
+  [config generators-count loop-number]
+  (if (= 0 (mod loop-number (:loops-to-generate-generator config)))
     (let [new-generators (inc generators-count)]
       (load/add-generator generators-count)
       (println "added generator, total is now" new-generators)
@@ -50,39 +43,46 @@
     new-time-outs))
 
 (defn add-row-or-time-out
-  [loop-number generators-count time-outs interaction-time current-time]
-  (if (> max-interaction-time interaction-time)
+  [config loop-number generators-count time-outs interaction-time current-time]
+  (if (> (:max-interaction-time config) interaction-time)
     (add-row loop-number current-time interaction-time generators-count time-outs)
     (time-out current-time time-outs)))
 
+(defn maybe-sleep
+  [current-time config start loop-number]
+  (let [continue-time-ms (+ start (* (:min-loop-time config) loop-number))
+        current-time-ms (inst-ms current-time)]
+    (when
+      (> continue-time-ms current-time-ms)
+      (Thread/sleep (- continue-time-ms current-time-ms)))))
+
 (defn analytics-loop
-  [start loop-number generators-count time-outs]
+  [config start loop-number generators-count time-outs]
   (let [interaction-time (interactions/safe-run loop-number)
         current-time (Instant/now)
-        new-time-outs (add-row-or-time-out loop-number generators-count time-outs interaction-time current-time)
-        millis-till-next (- (+ start (* min-loop-time loop-number)) (inst-ms current-time))]
-    (when (pos? millis-till-next) (Thread/sleep millis-till-next))
+        new-time-outs (add-row-or-time-out config loop-number generators-count time-outs interaction-time current-time)]
+    (maybe-sleep current-time config start loop-number)
     (if
-      (and
-        (> max-time-outs new-time-outs)
-        (> max-loops loop-number))
-      (recur start (inc loop-number) (optionally-increase-generators generators-count loop-number) new-time-outs)
-      loop-number)))
+      (or
+        (> new-time-outs (:max-time-outs config))
+        (>= loop-number (:max-loops config)))
+      loop-number
+      (recur config start (inc loop-number) (optionally-increase-generators config generators-count loop-number) new-time-outs))))
 
 (defn do-tests
-  []
-  (init)
-  (let [loop-number (analytics-loop (inst-ms (Instant/now)) 1 0 0)]
-    (close loop-number)))
+  [config]
+  (init config)
+  (let [loop-number (analytics-loop config (inst-ms (Instant/now)) 1 0 0)]
+    (close config loop-number)))
 
 (defn generate-data-json
-  [file-name]
-  (let [config (file/get-data file-name)
-        data (reduce-kv (fn [i k v] (assoc i k (file/get-data v))) {} (:mapping config))]
+  [file-name config]
+  (let [data (reduce-kv (fn [i k v] (assoc i k (file/get-data v))) {} (:mapping config))]
     (analysis/process file-name data)))
 
 (defn -main
-  [& [file-name]]
-  (if (nil? file-name)
-    (do-tests)
-    (generate-data-json file-name)))
+  [file-name]
+  (let [config (file/get-data file-name)]
+    (if (:base-test-file-name config)
+      (do-tests config)
+      (generate-data-json file-name config))))

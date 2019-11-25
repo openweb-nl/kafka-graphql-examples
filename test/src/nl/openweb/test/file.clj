@@ -13,10 +13,8 @@
 (def base-file-name "linger-ms-25-")
 
 (defn get-path
-  ([]
-   (get-path (str base-file-name (.format (SimpleDateFormat. "yyyy-MM-dd-HH-mm") (Date.)))))
-  ([name]
-   (str "resources/" name ".edn")))
+  [name]
+  (str "resources/" name ".edn"))
 
 (defn add-row
   [loop-number current-time interaction-time generators-count]
@@ -43,15 +41,16 @@
     (recur)))
 
 (defn init
-  []
-  (reset! file-name (get-path))
-  (println "creating file" @file-name "for the data")
+  [base-file-name]
+  (reset! file-name (get-path (str base-file-name (.format (SimpleDateFormat. "yyyy-MM-dd-HH-mm") (Date.)))))
+  (println "created file" @file-name "for the data")
   (clojure.java.io/make-parents @file-name)
   (spit @file-name "[\n")
   (reset! writer (future (write))))
 
 (defn close
   []
+  (Thread/sleep 2000)
   (reset! keep-writing false)
   (when-let [future @writer]
     @future

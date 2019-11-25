@@ -1,8 +1,10 @@
 # Apache Kafka with GraphQL examples
 
-This project is all about experimenting with Kafka and GraphQL. The frontend is deployed [here](https://graphql.gklijs.tech/results/linger-ms-config/average-latency) not working live backend but dus contain some results..
+This project is all about experimenting with Kafka and GraphQL. The frontend is deployed [here](https://graphql.gklijs.tech/results/linger-ms-config/average-latency) without a working backend but does contain some results from running tests..
 
-[![Build Status](https://travis-ci.com/openweb-nl/open-bank-mark.svg?branch=master)](https://travis-ci.com/openweb-nl/open-bank-mark)
+[![Presentation at GraphQL Summit 2019](http://img.youtube.com/vi/EN73NiR8xZI/0.jpg)](http://www.youtube.com/watch?v=EN73NiR8xZI "Using Kafka with GraphQL")
+
+[![Build Status](https://travis-ci.com/openweb-nl/kafka-graphql-examples.svg?branch=master)](https://travis-ci.com/openweb-nl/kafka-graphql-examples)
 
 ## Summary
 
@@ -261,7 +263,7 @@ It's the easiest to run the tests and generate the output with the scripts using
 There are several scripts to automate things. They are placed at the root level.
 * `clean.sh` stops and removes all used Docker container, it does not throw away the images
 * `create-certs.sh` is used to create a docker volume with the needed certs/secrets.
-* `loop.sh` takes a number and will (re)create the whole environment, and run a test x times.
+* `loop.sh` takes a number and a test configuration and will (re)create the whole environment, and run a test, using the said configuration x times.
 * `prepare.sh` is needed the first time before `restart.sh` can be used. It will get all the dependencies and build jar's. It needs leiningen, maven, sassc to be installed. As last step it will (re)build the docker images.
 * `restart.sh` is used to stop and start the whole setup, it does not start a test. When it's finished the application should be accessible at port 8181. 
 * `setup-db-ch.sh` and `setup-db-ge.sh` are used to setup the database. It takes the name of the Docker container to execute it on as the first argument and the port used as the second. When running a local PostgreSQL you could copy parts of it to create the users, tables and indexes.

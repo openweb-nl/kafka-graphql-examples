@@ -14,7 +14,7 @@
 (defn wait-till-value
   [expected-value]
   (let [start (inst-ms (Instant/now))]
-    (a/wait-has-text @driver {:css "#transactions div:nth-child(1) div div:nth-child(1) p:nth-child(1) span:nth-child(2)"} expected-value {:interval 0.05 :timeout @time-out})
+    (a/wait-has-text @driver {:css "#transactions div:nth-child(1) div div:nth-child(1) p:nth-child(1) span:nth-child(2)"} expected-value {:interval 0.5 :timeout @time-out})
     (- (inst-ms (Instant/now)) start)))
 
 (defn run-deposit

@@ -8,7 +8,7 @@ addons:
     sources:
       - google-chrome
     packages:
-      - chromium-browser=74.0.3729.169-0ubuntu0.16.04.1
+      - chromium-browser
       - chromium-chromedriver
 install:
   - cd /opt
@@ -22,4 +22,4 @@ before_script:
   - cd $TRAVIS_BUILD_DIR
   - ./prepare.sh
   - ./restart.sh
-script: java -jar test/target/test.jar
+script: java -jar test/target/test.jar it
