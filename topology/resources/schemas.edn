@@ -1,11 +1,12 @@
-{:records {:ConfirmAccountCreation   [:id]
+{:records {:ConfirmAccountCreation   [:id :username]
            :AccountCreationConfirmed [:id :iban :token]
            :AccountCreationFailed    [:id :reason]
            :ConfirmMoneyTransfer     [:id :token :amount {:name "from" :type :string} {:name "to" :type :string} :description]
            :MoneyTransferConfirmed   [:id]
            :MoneyTransferFailed      [:id :reason]
            :BalanceChanged           [:iban {:name "new-balance" :type :long} {:name "changed-by" :type :long} {:name "from-to" :type :string} :description]}
- :types   {:id        {:name "Uuid" :type :fixed :size 16}
+ :types   {:id          {:name "Uuid" :type :fixed :size 16}
+           :username    :string
            :reason      :string
            :iban        :string
            :token       :string

@@ -14,7 +14,7 @@
 
 (defn handle-cac
   [producer key ^ConfirmAccountCreation value]
-  (let [result (db/get-account (-> (.getId value) .bytes vg/bytes->uuid))
+  (let [result (db/get-account (-> (.getId value) .bytes vg/bytes->uuid) (.getUsername value))
         feedback (if (:reason result)
                    (AccountCreationFailed. (.getId value) (:reason result))
                    (AccountCreationConfirmed. (.getId value) (:iban result) (:token result)))]
@@ -33,9 +33,9 @@
   [producer key ^ConfirmMoneyTransfer value]
   (let [result (db/transfer value)]
     (if-let [from (:from result)]
-      (clients/produce producer bc-topic key (->bc true value from)))
+      (clients/produce producer bc-topic (:balance/username from) (->bc true value from)))
     (if-let [to (:to result)]
-      (clients/produce producer bc-topic key (->bc false value to)))
+      (clients/produce producer bc-topic (:balance/username to) (->bc false value to)))
     (if-let [reason (:reason result)]
       (clients/produce producer mtf-topic key (MoneyTransferFailed. (.getId value) reason))
       (clients/produce producer mtf-topic key (MoneyTransferConfirmed. (.getId value)))
