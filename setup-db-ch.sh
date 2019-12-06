@@ -33,7 +33,7 @@ create trigger balance_updated_at before update
 on balance for each row execute procedure
 maintain_updated_at();
 
-insert into balance (balance_id, iban, token, amount, lmt) values
+insert into balance (balance_id, username, iban, token, amount, lmt) values
     (0, 'open_web', 'NL66OPEN0000000000', '00000000000000000000', 100000000000000000, -50000);
 
 alter table balance alter column balance_id restart with 1;
