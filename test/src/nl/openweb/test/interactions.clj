@@ -12,9 +12,13 @@
 (def time-out (atom 5))
 
 (defn wait-till-value
-  [expected-value]
+  [expected-value interaction-interval]
   (let [start (inst-ms (Instant/now))]
-    (a/wait-has-text @driver {:css "#transactions div:nth-child(1) div div:nth-child(1) p:nth-child(1) span:nth-child(2)"} expected-value {:interval 0.5 :timeout @time-out})
+    (a/wait-has-text
+      @driver
+      {:css "#transactions div:nth-child(1) div div:nth-child(1) p:nth-child(1) span:nth-child(2)"}
+      expected-value
+      {:interval interaction-interval :timeout @time-out})
     (- (inst-ms (Instant/now)) start)))
 
 (defn run-deposit
@@ -34,17 +38,17 @@
     (nth transaction-values m)))
 
 (defn run
-  [loop-number]
+  [loop-number interaction-interval]
   (let [m (mod loop-number 10)
         v (if (< m 5)
             (run-deposit m)
             (run-transaction (- m 5)))]
-    (wait-till-value v)))
+    (wait-till-value v interaction-interval)))
 
 (defn safe-run
-  [loop-number]
+  [loop-number interaction-interval]
   (try
-    (run loop-number)
+    (run loop-number interaction-interval)
     (catch Exception error
       (println "An error occurred" (.toString error))
       Integer/MAX_VALUE)))
@@ -68,13 +72,13 @@
     (a/wait 1)
     (a/click {:css "#login-form div:nth-child(3)"})))
 
-  (defn prep
-    [max-interaction-time]
-    (reset! time-out (int (Math/ceil (/ max-interaction-time 1000))))
-    (reset! driver (a/chrome-headless))
-    (login)
-    (wait-till-button))
+(defn prep
+  [max-interaction-time]
+  (reset! time-out (int (Math/ceil (/ max-interaction-time 1000))))
+  (reset! driver (a/chrome-headless))
+  (login)
+  (wait-till-button))
 
-  (defn close
-    []
-    (a/delete-session @driver))
+(defn close
+  []
+  (a/delete-session @driver))

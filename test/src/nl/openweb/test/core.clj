@@ -58,7 +58,7 @@
 
 (defn analytics-loop
   [config start loop-number generators-count time-outs]
-  (let [interaction-time (interactions/safe-run loop-number)
+  (let [interaction-time (interactions/safe-run loop-number (:interaction-interval config))
         current-time (Instant/now)
         new-time-outs (add-row-or-time-out config loop-number generators-count time-outs interaction-time current-time)]
     (maybe-sleep current-time config start loop-number)

@@ -1,7 +1,8 @@
 {:max-interaction-time        20000
+ :interaction-interval        1
  :min-loop-time               5000
- :max-loops                   3
+ :max-loops                   10
  :max-time-outs               0
  :loops-to-generate-generator 101
- :loops-for-success           3
+ :loops-for-success           10
  :base-test-file-name         "it-"}
