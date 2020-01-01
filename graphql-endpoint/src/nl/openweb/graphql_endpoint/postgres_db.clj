@@ -2,7 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [hikari-cp.core :as h]))
 
-(def db-port (read-string (or (System/getenv "DB_PORT") "5432")))
+(def db-port (read-string (or (System/getenv "DB_PORT") "25431")))
 (def db-hostname (or (System/getenv "DB_HOSTNAME") "localhost"))
 (def db-password (or (System/getenv "DB_PASSWORD") "kafka-graphql-pw"))
 
