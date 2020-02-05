@@ -23,7 +23,7 @@ services:
     restart: always
 
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:5.3.1
+    image: confluentinc/cp-zookeeper:5.4.0
     container_name: zk1
     ports:
       - "22181:2181"
@@ -41,7 +41,7 @@ services:
     restart: always
 
   zookeeper-2:
-    image: confluentinc/cp-zookeeper:5.3.1
+    image: confluentinc/cp-zookeeper:5.4.0
     container_name: zk2
     ports:
       - "32181:2181"
@@ -59,7 +59,7 @@ services:
     restart: always
 
   zookeeper-3:
-    image: confluentinc/cp-zookeeper:5.3.1
+    image: confluentinc/cp-zookeeper:5.4.0
     container_name: zk3
     ports:
       - "42181:2181"
@@ -78,7 +78,7 @@ services:
 
 
   kafka-1:
-    image: confluentinc/cp-kafka:5.3.1
+    image: confluentinc/cp-kafka:5.4.0
     container_name: kafka-1
     ports:
       - "9092:9092"
@@ -111,7 +111,7 @@ services:
     restart: always
 
   kafka-2:
-    image: confluentinc/cp-kafka:5.3.1
+    image: confluentinc/cp-kafka:5.4.0
     container_name: kafka-2
     ports:
       - "9094:9094"
@@ -144,7 +144,7 @@ services:
     restart: always
 
   kafka-3:
-    image: confluentinc/cp-kafka:5.3.1
+    image: confluentinc/cp-kafka:5.4.0
     container_name: kafka-3
     ports:
       - "9096:9096"
@@ -177,7 +177,7 @@ services:
     restart: always
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:5.3.1
+    image: confluentinc/cp-schema-registry:5.4.0
     container_name: sr
     ports:
       - "8081:8081"

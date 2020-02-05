@@ -1,15 +1,15 @@
 (defproject nl.openweb/bank "0.1.0-SNAPSHOT"
   :description "front-end for the kafka workshop"
   :url "https://github.com/openweb-nl/kafka-graphql-examples/tree/master/frontend"
-  :dependencies [[cljsjs/vega "5.4.0-0"]
-                 [cljsjs/vega-lite "3.4.0-0"]
-                 [cljsjs/vega-embed "4.0.0-0"]
-                 [cljsjs/vega-tooltip "0.18.1-0"]
+  :dependencies [[cljsjs/vega "5.9.0-0"]
+                 [cljsjs/vega-lite "4.0.2-0"]
+                 [cljsjs/vega-embed "6.0.0-0"]
+                 [cljsjs/vega-tooltip "0.20.0-0"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.520"]
-                 [reagent "0.8.1"]
-                 [re-frame "0.10.9"]
-                 [re-graph "0.1.10"]
+                 [org.clojure/clojurescript "1.10.597"]
+                 [reagent "0.9.1"]
+                 [re-frame "0.11.0"]
+                 [re-graph "0.1.11"]
                  [bidi "2.1.6"]
                  [kibu/pushy "0.3.8"]]
   :plugins [[lein-cljsbuild "1.1.5"]
@@ -24,8 +24,8 @@
          :command          :sassc}
   :profiles
   {:dev
-   {:dependencies [[binaryage/devtools "0.9.10"]
-                   [day8.re-frame/re-frame-10x "0.4.4"]]
+   {:dependencies [[binaryage/devtools "1.0.0"]
+                   [day8.re-frame/re-frame-10x "0.4.7"]]
     :plugins      [[lein-figwheel "0.5.19"]]}}
   :cljsbuild
   {:builds

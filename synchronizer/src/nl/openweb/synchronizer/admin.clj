@@ -9,7 +9,7 @@
 (defn create-new-topic
   [topic options nodes]
   (let [[numPartitions replicationFactor _ config] options
-        new-topic (NewTopic. topic numPartitions (min replicationFactor nodes))
+        new-topic (NewTopic. topic numPartitions (short (min replicationFactor nodes)))
         string-config (reduce-kv #(assoc %1 (name %2) (str %3)) {} config)]
     (.configs new-topic string-config)))
 
