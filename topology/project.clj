@@ -8,7 +8,6 @@
                  [com.fasterxml.jackson.core/jackson-databind :version]
                  [io.confluent/kafka-avro-serializer :version :exclusions [io.netty/netty org.slf4j/slf4j-log4j12 com.fasterxml.jackson.core/jackson-core]]
                  [org.apache.avro/avro :version]
-                 [org.apache.kafka/kafka-clients "2.4.0"]
                  [org.clojure/clojure :version]
                  [org.clojure/tools.logging :version]]
   :java-source-paths ["target/main/java"]

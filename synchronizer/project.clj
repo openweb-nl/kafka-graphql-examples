@@ -4,7 +4,7 @@
                            [nl.openweb/topology :version]
                            [org.clojure/clojure :version]
                            [org.clojure/data.json :version]
-                           [org.slf4j/jcl-over-slf4j "1.7.26"]]
+                           [org.slf4j/jcl-over-slf4j "2.0.0-alpha1"]]
             :main nl.openweb.synchronizer.core
             :profiles {:uberjar {:omit-source  true
                                  :aot          :all

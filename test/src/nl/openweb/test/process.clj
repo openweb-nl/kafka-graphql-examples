@@ -1,41 +1,28 @@
 (ns nl.openweb.test.process
-  (:require [clj-docker-client.core :as docker]))
+  (:require [nl.openweb.test.resource-tracker :as rt]))
 
-(defonce docker-conn (atom nil))
+(defonce functions (atom nil))
+
+(def container-names ["db-ch" "db-ge" "command-handler" "kafka-1" "kafka-2" "kafka-3" "graphql-endpoint"])
 
 (defn init
-  []
-  (reset! docker-conn (docker/connect))
-  (docker/stats @docker-conn "db-ch")
-  (docker/stats @docker-conn "db-ge")
-  (docker/stats @docker-conn "command-handler")
-  (docker/stats @docker-conn "kafka-1")
-  (docker/stats @docker-conn "kafka-2")
-  (docker/stats @docker-conn "kafka-3")
-  (docker/stats @docker-conn "graphql-endpoint"))
+  [docker-url]
+  (reset! functions (mapv (fn [name] (rt/init docker-url name)) container-names)))
 
 (defn get-info
   []
-  (let [db-ch-stats (docker/stats @docker-conn "db-ch")
-        db-ge-stats (docker/stats @docker-conn "db-ge")
-        ch-stats (docker/stats @docker-conn "command-handler")
-        k1-stats (docker/stats @docker-conn "kafka-1")
-        k2-stats (docker/stats @docker-conn "kafka-2")
-        k3-stats (docker/stats @docker-conn "kafka-3")
-        ge-stats (docker/stats @docker-conn "graphql-endpoint")]
-    [(:cpu-pct db-ch-stats)
-     (:mem-mib db-ch-stats)
-     (:cpu-pct db-ge-stats)
-     (:mem-mib db-ge-stats)
-     (:cpu-pct ch-stats)
-     (:mem-mib ch-stats)
-     (+ (:cpu-pct k1-stats) (:cpu-pct k2-stats) (:cpu-pct k3-stats))
-     (+ (:mem-mib k1-stats) (:mem-mib k2-stats) (:mem-mib k3-stats))
-     (:cpu-pct ge-stats)
-     (:mem-mib ge-stats)]
-    ))
+  (let [[db-ch db-ge ch k1 k2 k3 ge] (pmap rt/get-usage @functions)]
+    [(:cpu-pct db-ch)
+     (:mem-mib db-ch)
+     (:cpu-pct db-ge)
+     (:mem-mib db-ge)
+     (:cpu-pct ch)
+     (:mem-mib ch)
+     (+ (:cpu-pct k1) (:cpu-pct k2) (:cpu-pct k3))
+     (+ (:mem-mib k1) (:mem-mib k2) (:mem-mib k3))
+     (:cpu-pct ge)
+     (:mem-mib ge)]))
 
 (defn close
   []
-  (docker/disconnect @docker-conn)
-  (reset! docker-conn nil))
+  (reset! functions nil))

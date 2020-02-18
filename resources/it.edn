@@ -5,4 +5,5 @@
  :max-time-outs               0
  :loops-to-generate-generator 101
  :loops-for-success           3
- :base-test-file-name         "it-"}
+ :base-test-file-name         "it-"
+ :docker-url                  "unix:///var/run/docker.sock"}

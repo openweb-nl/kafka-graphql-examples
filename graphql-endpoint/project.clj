@@ -8,11 +8,11 @@
                  [nl.openweb/topology :version]
                  [org.clojure/clojure :version]
                  [org.postgresql/postgresql :version]
+                 [org.slf4j/slf4j-api "2.0.0-alpha1"]
                  [seancorfield/next.jdbc :version]]
   :main nl.openweb.graphql-endpoint.core
   :profiles {:uberjar {:omit-source  true
                        :aot          [nl.openweb.graphql-endpoint.core]
                        :uberjar-name "ge-docker.jar"}
              :viz {:dependencies [[walmartlabs/system-viz "0.4.0"]]
-                   :main nl.openweb.graphql-endpoint.viz
-                   }})
+                   :main nl.openweb.graphql-endpoint.viz}})

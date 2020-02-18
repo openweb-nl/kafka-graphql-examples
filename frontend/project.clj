@@ -1,15 +1,15 @@
 (defproject nl.openweb/bank "0.1.0-SNAPSHOT"
   :description "front-end for the kafka workshop"
   :url "https://github.com/openweb-nl/kafka-graphql-examples/tree/master/frontend"
-  :dependencies [[cljsjs/vega "5.9.0-0"]
-                 [cljsjs/vega-lite "4.0.2-0"]
-                 [cljsjs/vega-embed "6.0.0-0"]
-                 [cljsjs/vega-tooltip "0.20.0-0"]
+  :dependencies [[cljsjs/vega "5.9.0-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
+                 [cljsjs/vega-lite "4.0.2-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
+                 [cljsjs/vega-embed "6.0.0-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
+                 [cljsjs/vega-tooltip "0.20.0-0" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.597"]
+                 [org.clojure/clojurescript "1.10.597" :exclusions [com.google.errorprone/error_prone_annotations com.google.code.findbugs/jsr305]]
                  [reagent "0.9.1"]
                  [re-frame "0.11.0"]
-                 [re-graph "0.1.11"]
+                 [re-graph "0.1.11" :exclusions [args4j]]
                  [bidi "2.1.6"]
                  [kibu/pushy "0.3.8"]]
   :plugins [[lein-cljsbuild "1.1.5"]

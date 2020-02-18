@@ -9,9 +9,9 @@
   (start [this]
     (assoc this :server (-> schema-provider
                             :schema
-                            (lp/service-map {:graphiql      true
+                            (lp/service-map {:graphiql      false
                                              :subscriptions true})
-                            (assoc :io.pedestal.http/allowed-origins ["http://localhost:4200", "http://localhost:8888"])
+                            (assoc :io.pedestal.http/allowed-origins ["http://localhost:4200", "http://localhost:8181", "http://localhost:3449"])
                             http/create-server
                             http/start)))
 

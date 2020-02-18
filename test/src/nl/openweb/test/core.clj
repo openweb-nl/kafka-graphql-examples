@@ -9,7 +9,7 @@
 
 (defn init
   [config]
-  (process/init)
+  (process/init (:docker-url config))
   (file/init (:base-test-file-name config))
   (interactions/prep (:max-interaction-time config)))
 
