@@ -6,9 +6,9 @@
 (defn init
   [uri container-name]
   (let [docker-conn (docker/connect {:uri             uri
-                                     :connect-timeout 10
-                                     :read-timeout    2000
-                                     :write-timeout   2000
+                                     :connect-timeout 1000
+                                     :read-timeout    5000
+                                     :write-timeout   5000
                                      :call-timeout    30000})
         containers (docker/client {:category :containers :conn docker-conn})
         stats-f (fn [] (docker/invoke containers {:op :ContainerStats :params {:id container-name :stream false}}))]
@@ -25,11 +25,22 @@
 
 (defn- get-mem-mib
   [stats]
-  (double (/ (get-in stats [:memory_stats :usage]) bytes-in-mb)))
+  (double (/
+            (- (get-in stats [:memory_stats :usage])
+               (get-in stats [:memory_stats :stats :total_cache]))
+            bytes-in-mb)))
 
-(defn get-usage
+(defn- get-usage
   [stats-f]
   (let [stats (stats-f)
         cpu-pct (get-cpu-pct stats)
         mem-mib (get-mem-mib stats)]
     {:cpu-pct cpu-pct :mem-mib mem-mib}))
+
+(defn safe-get-usage
+  [stats-f]
+  (try
+    (get-usage stats-f)
+    (catch Exception error
+      (println "An error occurred" (.toString error))
+      {})))

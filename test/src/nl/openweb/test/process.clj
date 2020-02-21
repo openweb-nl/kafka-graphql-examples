@@ -11,7 +11,7 @@
 
 (defn get-info
   []
-  (let [[db-ch db-ge ch k1 k2 k3 ge] (pmap rt/get-usage @functions)]
+  (let [[db-ch db-ge ch k1 k2 k3 ge] (pmap rt/safe-get-usage @functions)]
     [(:cpu-pct db-ch)
      (:mem-mib db-ch)
      (:cpu-pct db-ge)
