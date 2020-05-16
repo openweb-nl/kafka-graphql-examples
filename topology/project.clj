@@ -14,7 +14,7 @@
   :javac-options ["-target" "11" "-source" "11"]
   :prep-tasks ["compile" "javac"]
   :aot :all
-  :profiles {:provided {:dependencies [[org.apache.avro/avro-compiler "1.9.1"]]
+  :profiles {:provided {:dependencies [[org.apache.avro/avro-compiler "1.9.2"]]
                         :source-paths ["env/dev/clj"]
                         :aot          [nl.openweb.dev.avro-compile]
                         }})

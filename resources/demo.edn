@@ -1,0 +1,9 @@
+{:max-interaction-time        5000
+ :interaction-interval        0.05
+ :min-loop-time               1000
+ :max-loops                   60
+ :max-time-outs               20
+ :loops-to-generate-generator 10
+ :loops-for-success           60
+ :base-test-file-name         "demo-"
+ :docker-url                  "unix:///var/run/docker.sock"}
