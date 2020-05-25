@@ -98,5 +98,9 @@ frontend/resources/public/js
 frontend/resources/public/css
 frontend/public/
 
+# graphql-endpoint node
+graphql-endpoint/dist
+graphql-endpoint/node_modules
+
 # Mac
 .DS_Store
